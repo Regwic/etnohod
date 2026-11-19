@@ -1,0 +1,15 @@
+.button-confetti-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:2147483000;contain:strict}.button-confetti-layer>i{position:absolute;display:block;border-radius:2px;pointer-events:none;will-change:transform,opacity}
+@media(max-width:820px){
+ body:not([data-route=home])>.site-header{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%;max-width:none;margin:0;padding:16px 18px 18px;gap:15px 10px;box-sizing:border-box;min-height:0}
+ body:not([data-route=home])>.site-header .brand{min-width:0;font-size:18px;gap:8px;letter-spacing:-.04em}
+ body:not([data-route=home])>.site-header .brand img{width:30px;height:30px}
+ body:not([data-route=home])>.site-header .header-enter{max-width:150px;padding:9px 12px;min-height:44px;font-size:12px;line-height:1.35;letter-spacing:0;text-align:center;justify-content:center;white-space:normal}
+ body:not([data-route=home])>.site-header #nav{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;max-width:100%;min-width:0;margin:0;padding:5px;gap:3px;overflow:visible;border:1px solid #ffffff35;border-radius:22px;box-sizing:border-box;align-items:stretch}
+ body:not([data-route=home])>.site-header #nav a{display:flex;align-items:center;justify-content:center;min-width:0;min-height:46px;padding:9px 3px;margin:0;font-size:12px;line-height:1.25;font-weight:900;letter-spacing:0;white-space:nowrap;border-radius:16px;box-sizing:border-box}
+ .first-screen .fs-nav{max-width:100%;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;border-radius:22px;box-sizing:border-box}
+ .first-screen .fs-nav a{min-width:0;padding:10px 4px;font-size:12px;letter-spacing:0;text-align:center;border-radius:16px}
+}
+@media(prefers-reduced-motion:reduce){.button-confetti-layer{display:none}}
+
+@media(max-width:820px){body:not([data-route=home])>.site-header .brand{min-height:44px}.first-screen .fs-logo{min-height:44px}}
+:where(button,a.btn,a.kid-primary,.fs-primary-link,.fs-cta):active:not(:disabled){filter:brightness(.92)}

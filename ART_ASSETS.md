@@ -1,0 +1,30 @@
+# Иллюстрации страницы карты
+
+Созданы встроенным инструментом ImageGen для Этнохода. Это новые иллюстрации; приложенный пользователем мудборд использован как направление, не как макет для копирования.
+
+## Рысёнок Тим
+
+Файл сайта: `dist/assets/lynx-guide.png` (прозрачный PNG, оптимизирован для веба).
+
+Промпт:
+
+> Use case: illustration-story. Asset type: transparent cutout character for a sophisticated children's educational atlas website, Russia cultural expeditions. Create one original charming friendly Eurasian lynx cub explorer, warm sandy fur with subtle spots and ear tufts, curious kind eyes, tasteful hand-painted storybook gouache and colored-pencil textures on parchment-like surfaces. The lynx wears an olive green small expedition vest and cream neckerchief, a simple tiny ochre satchel, holds a folded paper map in one paw, other paw raised in a welcoming gesture. Full body, front three-quarter view, proportions youthful and expressive but not babyish, age audience 9–13. Elegant artisanal illustration with detailed fur edge, convincing appealing anatomy, subtly dimensional, calm forest green, warm ochre and terracotta accents. No background, genuine alpha transparency. No frame, no ground rectangle, no lettering, no text, no logo, no UI. Isolated character centered with roomy padding around ears and tail. This is a newly authored mascot, not a copy of any existing character.
+
+## Открытка Южного Урала
+
+Файл сайта: `dist/assets/ural-postcard.jpg` (оптимизированный JPEG). Художественная иллюстрация, не документальная фотография конкретного места.
+
+Промпт:
+
+> Use case: illustration-story. Asset type: wide landscape postcard illustration in an elegant children's educational travel atlas about Bashkortostan, Southern Ural. Painterly storybook gouache with fine colored-pencil details and subtle handmade paper texture, warmly inviting, crafted high-end editorial illustration suitable ages 9–13. Scene: rolling green Ural foothills and a pale limestone rock outcrop, winding small turquoise river through a lush meadow, birches and pine forest, wildflowers in foreground, summer blue sky with soft white clouds. Small traditional white felt yurt with understated green trim tucked on the right beside trees; no people, no buildings with onion domes, no fantasy castles, no giant snowy Alps. Composition panoramic landscape, river draws eye from lower left into center, foreground detail but clear silhouette. Natural moss green, sage, honey ochre, warm cream and soft sky blue colors. Gentle daylight, welcoming expedition adventure mood. No text, no lettering, no border, no UI or logos.
+# Персонажи игры
+
+Созданы встроенным ImageGen в режиме illustration-story с прозрачным фоном.
+
+- `dist/assets/explorers-atlas.png`: шесть полноростовых спрайтов, сетка 3 × 2. Мальчик и девочка в современных походных нарядах: зелёный, красный и синий варианты. Стиль: мягкая книжная живопись, тонкие карандашные контуры, тёплые цвета, дружелюбные выразительные лица. Каждый персонаж расположен внутри своей ячейки без текста и фона.
+- `dist/assets/story-hosts.png`: два полноростовых персонажа на прозрачном квадратном атласе: Данияр слева, его бабушка справа. Промпт: Use case: illustration-story. Create a beautiful cohesive original 2-character SPRITE ATLAS, square transparent canvas split into exactly two equal invisible columns. Genuine transparent alpha, no background, no panels no writing no scenery. Left cell: Daniyar, friendly modern Bashkir boy age12, warm brown eyes, short dark brown hair, cheerful expressive smile, cream shirt and deep forest-green open vest with restrained gold embroidery edging, dark trousers, small green traditional cap, comfortable shoes. A friendly child host for an educational story game, welcoming with one hand open, tasteful culturally respectful outfit. Right cell: his grandmother, elderly Bashkir woman with warm kind face, fine smile lines, brown eyes, white headscarf wrapped modestly, long warm red dress with cream blouse and forest green sleeveless overgarment with delicate gold edging, hands gently open in storytelling gesture. Both COMPLETE full body with head and feet comfortably inside own column, generous transparent padding. Polished painterly children's adventure game art, subtle pencil outlines, warm natural light, sophisticated storybook textures, large friendly eyes, charming approachable proportions. Match modern illustrated explorer children, not photorealism or plastic3D. Each figure same groundlevel centered in own half, no overlap, no extra characters.
+
+# Легенда в шести кадрах
+
+`dist/assets/ural-epic-atlas.png`, встроенный ImageGen, illustration-story, без прозрачности. Промпт: Use case illustration-story. Original children's illustrated folk epic landscape atlas, exactly six equally sized landscape panels in precise 2columns by3rows grid, no gutters, each panel self-contained. Entire square canvas, no text or lettering. Sophisticated warm pencil outlines and painterly storybook illustrations, moss forest-green, gold, river blue, warm ivory palette, respectful fantasy drawing from Bashkir Ural-batyr epic. Same young kind dark-haired hero wearing forest-green tunic throughout, no frightening violence. Panel1 top left: hero and brother stand before immense Ural mountain landscape at sunrise, journey beginning. Panel2 top right: hero walking through a deep forest beside a shimmering stream, searching for living spring. Panel3 middle left: heroic silhouette facing a distant fantastical dragon among mountains, brave but nonviolent composition. Panel4 middle right: hero discovering a glowing small woodland spring, wonder and hope. Panel5 bottom left: hero scattering sparkling spring water over seedlings and grass to help nature flourish, clear generous gesture. Panel6 bottom right: wide lush Ural mountains with vibrant rivers and trees at golden sunset, peaceful wildlife, lasting legacy. Beautiful coherent educational visual novel art, cinematic natural light, original artwork, no logo no typography no UI.
+

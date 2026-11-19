@@ -1,0 +1,121 @@
+/* Shared adventure shell. Illustrated play boards keep their original semantic colours. */
+body:not([data-route=home]){--paper:#10291f;--ink:#fff5db;--muted:#d0d9c3;--line:#ffffff29;--gold:#ffc94a;--sans:Nunito,system-ui,sans-serif;--serif:Nunito,system-ui,sans-serif;min-height:100svh;background:radial-gradient(ellipse at 80% 0,#42684d66,transparent 55%),linear-gradient(160deg,#193f2e,#10291f 60%,#0c2119);color:var(--ink);font-weight:700}
+body:not([data-route=home]):before{content:'';position:fixed;inset:auto 0 0;height:38vh;z-index:-1;pointer-events:none;background:linear-gradient(150deg,transparent 20%,#294e3d 20.2%,#294e3d 40%,transparent 40.2%),linear-gradient(215deg,transparent 30%,#1b3a2d 30.2%,#1b3a2d 65%,transparent 65.2%);opacity:.35}
+body:not([data-route=home]):after{opacity:.035}
+body:not([data-route=home])>.site-header{height:auto;min-height:108px;border:0;margin:0 auto;padding:20px clamp(20px,3vw,44px);max-width:1500px;gap:22px;color:#fff6df}
+body:not([data-route=home]) .site-header .brand{font:800 23px/1.15 Unbounded,Nunito,sans-serif;letter-spacing:-.04em}
+body:not([data-route=home]) .site-header nav{margin:0;padding:5px;gap:4px;border:1px solid #ffffff29;border-radius:99px;background:#08180f66;backdrop-filter:blur(16px)}
+body:not([data-route=home]) .site-header nav a{padding:10px 18px;border:0;border-radius:99px;font-size:14px;font-weight:900;line-height:1.5;min-height:44px}
+body:not([data-route=home]) .site-header nav a:after{display:none}
+body:not([data-route=home]) .site-header nav a:is(:hover,.active){background:#ffc94a;color:#14291e;transform:none}
+body:not([data-route=home]) .header-enter{padding:11px 17px;border:1px solid #ffffff29;border-radius:99px;background:#ffffff0d;font-size:13px;font-weight:900;line-height:1.5;min-height:44px;white-space:normal;text-align:center}
+body:not([data-route=home]) #app{max-width:1440px;padding-inline:clamp(20px,3vw,44px)}
+body:not([data-route=home]) .page-heading{padding:26px 0 25px;max-width:1150px}
+body:not([data-route=home]) .page-heading h1{font:800 clamp(29px,3.7vw,52px)/1.18 Unbounded,Nunito,sans-serif;letter-spacing:-.045em;color:#fff4d5;margin:0;overflow-wrap:anywhere}
+body:not([data-route=home]) .site-footer{color:#c6d4bd;border-color:#ffffff24;font-size:13px;margin-top:50px}
+body:not([data-route=home]) .site-footer .brand{color:#fff4d5;font:800 24px Unbounded,Nunito,sans-serif}
+body:not([data-route=home]) .site-footer small{font-size:11px;letter-spacing:0}
+body:not([data-route=home]) :is(a,button,input,select,summary):focus-visible{outline:3px solid #ffc94a;outline-offset:4px}
+body:not([data-route=home]) :is(.game-panel,.card,.game-stage,.game-badge,.game-profile-hero,.game-guide-card,.game-guide-topics,.game-history,.game-profile-summary){--ink:#fff4da;--muted:#d0dbc5;--paper:#163b2a;color:#fff4da;background:linear-gradient(145deg,#294f3cdd,#163b2ae8);border:1px solid #ffffff2c;border-radius:28px;box-shadow:0 18px 45px #0002;backdrop-filter:blur(14px)}
+body:not([data-route=home]) :is(.game-panel,.card,.game-stage,.game-badge,.game-profile-hero,.game-guide-card,.game-guide-topics,.game-history,.game-profile-summary) :is(h2,h3,legend,label,strong){color:#fff3d3}
+body:not([data-route=home]) :is(.game-panel,.card,.game-stage,.game-badge,.game-profile-hero,.game-guide-card,.game-guide-topics,.game-history,.game-profile-summary) :is(p,li,small){color:#d1ddc7}
+body:not([data-route=home]) :is(.game-world,.visit-shell,.story-game)>:is(h2,h3,p){color:#f6edd6}
+body:not([data-route=home]) :is(.game-text-link,.text-link){color:#ffe197;border-color:#ffe19766}
+body:not([data-route=home]) .game-world :is(.kid-primary,.btn:not(.secondary)),body:not([data-route=home]) .visit-shell .kid-primary,body:not([data-route=home]) .story-game .kid-primary{color:#172b1d;background:linear-gradient(#ffda73,#ffc94a);border:1px solid #ffdb7b;border-radius:20px;box-shadow:0 5px 0 #a77a1e,0 12px 26px #0002;font-family:Nunito,system-ui,sans-serif;font-weight:900;min-height:50px;letter-spacing:0}
+body:not([data-route=home]) :is(.game-world,.visit-shell,.story-game) .btn.secondary{color:#fff4d9;background:#ffffff0d;border:1px solid #ffffff3b;border-radius:17px;box-shadow:0 3px 0 #0002;font-weight:900;min-height:46px}
+body:not([data-route=home]) :is(.game-world,.visit-shell,.story-game) .btn.secondary:hover{color:#112a1d;background:#ffe19b;border-color:#ffe19b}
+body:not([data-route=home]) :is(input:not([type=radio]):not([type=checkbox]),select,textarea){background:#0c251c;color:#fff5dc;border:1.5px solid #ffffff40;border-radius:16px;font-size:16px;font-weight:800;padding:14px 16px}
+body:not([data-route=home]) input::placeholder{color:#a9bca7}
+body:not([data-route=home]) :is(input[type=radio],input[type=checkbox]){accent-color:#ffc94a}
+body:not([data-route=home]) :is(fieldset,td,th){border-color:#ffffff26}
+body:not([data-route=home]) :is(label,legend){font-size:15px;font-weight:900;letter-spacing:0}
+body:not([data-route=home]) th{font-size:13px;letter-spacing:0;text-transform:none;color:#ffe09a;background:#0b241b66}
+body:not([data-route=home]) td{font-size:14px;color:inherit}
+body:not([data-route=home]) table{line-height:1.6}
+body:not([data-route=home]) .notice{background:#ffc94a14;border-color:#ffc94a;border-radius:0 16px 16px 0;color:#f7e8bd;font-size:14px}
+body:not([data-route=home]) .error,body:not([data-route=home]) #visitJoinError{color:#ffb5a2}
+body:not([data-route=home]) .game-stats{background:#0b241b70;border:1px solid #ffffff29;border-radius:24px;overflow:hidden}
+body:not([data-route=home]) .game-stats div{border-color:#ffffff26;background:transparent}
+body:not([data-route=home]) .game-stats strong{color:#ffdc7d}
+body:not([data-route=home]) .game-stats span{color:#d3dfc9;font-size:13px}
+body:not([data-route=home]) :is(.game-pill,.game-stage-state,.game-badge-state){background:#ffc94a1f;border-color:#ffc94a60;color:#ffe19b;border-radius:99px;font-weight:900}
+body:not([data-route=home]) .game-stage.complete{background:linear-gradient(145deg,#3b6342,#1e442d);border-color:#a6e05a66}
+body:not([data-route=home]) .game-trail a{background:#143b2a;border-color:#ffffff3d;color:#f7e9c8}
+body:not([data-route=home]) .game-trail a:is(.complete,.current){background:#ffc94a;border-color:#ffe19b;color:#13281d}
+body:not([data-route=home]) .game-challenge .answer{background:#102e23;border-color:#ffffff35;color:#fff4da;border-radius:17px}
+body:not([data-route=home]) .game-challenge .answer:hover{background:#365d3c;border-color:#ffdb7b}
+body:not([data-route=home]) .game-challenge-mascot{background:#ffffff0b;border-color:#ffffff24}
+body:not([data-route=home]) .game-challenge-mascot p{color:#fff4da}
+body:not([data-route=home]) .answer-letter{background:#ffc94a25;color:#ffe197}
+body:not([data-route=home]) :is(.game-question,.game-reading-copy p){color:#fff4da}
+body:not([data-route=home]) :is(.game-guide-reply,.guide-reply,.chat-bubble){background:#102e23;border-color:#ffffff30;border-radius:20px;color:#fff4da}
+body:not([data-route=home]) .game-topic-list button{background:#ffffff0b;color:#fff1ce;border-color:#ffffff2e;border-radius:17px}
+body:not([data-route=home]) .game-topic-list button:hover{background:#ffc94a22}
+/* The travel book and illustrated story remain warm reading surfaces against the forest. */
+body:not([data-route=home]) :is(.visit-shell,.story-game){--visit-ink:#294c34;--visit-paper:#fff5d8;--visit-line:#d5bd7c}
+body:not([data-route=home]) :is(.visit-book-spread,.visit-wardrobe-controls,.visit-tutorial-card,.story-booklet,.story-cookbook,.story-outfit,.story-epic-card,.story-dialogue,.story-reward-grid article){color:#294c34;background:#fff5dc;border:1px solid #dcc38b;border-radius:28px;box-shadow:0 8px 0 #0002,0 18px 40px #0002;backdrop-filter:none}
+body:not([data-route=home]) :is(.visit-book-spread,.visit-wardrobe-controls,.visit-tutorial-card,.story-booklet,.story-cookbook,.story-outfit,.story-epic-card,.story-dialogue,.story-reward-grid article) :is(h2,h3,legend,label,strong){color:#294c34}
+body:not([data-route=home]) :is(.visit-book-spread,.visit-wardrobe-controls,.visit-tutorial-card,.story-booklet,.story-cookbook,.story-outfit,.story-epic-card,.story-dialogue,.story-reward-grid article) :is(p,li,small){color:#526446}
+body:not([data-route=home]) :is(.visit-book-spread,.visit-wardrobe-controls,.visit-tutorial-card,.story-booklet,.story-cookbook,.story-outfit,.story-epic-card,.story-dialogue,.story-reward-grid article) :is(.btn.secondary,.game-text-link){background:#153d2b0d;border-color:#4264495c;color:#2e5434}
+body:not([data-route=home]) :is(.visit-book-spread,.visit-wardrobe-controls,.visit-tutorial-card,.story-booklet,.story-cookbook,.story-outfit,.story-epic-card,.story-dialogue,.story-reward-grid article) .btn.secondary:hover{background:#e3eac7;color:#244a31}
+body:not([data-route=home]) .visit-book-toolbar .game-text-link{color:#ffe19b}
+body:not([data-route=home]) .visit-book-tabs{background:#efe5c0;border-color:#d1be86}
+body:not([data-route=home]) .visit-book-tabs>.btn{color:#405d37;background:transparent}
+body:not([data-route=home]) .visit-book-tabs>.btn.active{background:#ffc94a;color:#203b27;border-color:#c29431}
+body:not([data-route=home]) .visit-book-regions a{background:#31543b;color:#dfebcb;border-color:#ffffff36}
+body:not([data-route=home]) .visit-book-regions a.active{background:#fff5dc;color:#355332;border-color:#dcc38b;border-bottom-color:#fff5dc}
+body:not([data-route=home]) .visit-wardrobe-preview{background:radial-gradient(ellipse at 50% 25%,#59714b,#214b35 75%);border-color:#ffffff29;box-shadow:0 18px 45px #0002;color:#fff4da}
+body:not([data-route=home]) .visit-wardrobe-preview :is(h2,p){color:#fff4da}
+body:not([data-route=home]) .visit-wardrobe-status{color:#526446!important}
+body:not([data-route=home]) .visit-tutorial-art{background:linear-gradient(145deg,#a2bf79,#4e845d)}
+body:not([data-route=home]) .visit-local-note{color:#cad5bf!important}
+body:not([data-route=home]) .story-topbar>a{color:#ffdd87;border-color:#ffffff3b;background:#0b241b66;border-radius:99px}
+body:not([data-route=home]) :is(.story-progress>span,.story-save-note){color:#e0e7d3}
+body:not([data-route=home]) .story-progress progress{accent-color:#ffc94a}
+body:not([data-route=home]) .story-progress progress::-webkit-progress-value{background:#ffc94a}
+body:not([data-route=home]) .story-guide-strip{color:#fff3d4;background:#214c35;border-color:#ffffff2b;border-radius:24px}
+body:not([data-route=home]) .story-guide-strip p{color:#fff3d4}
+body:not([data-route=home]) .story-sources{border-color:#ffffff2c;color:#e4ead7}
+body:not([data-route=home]) .story-sources summary{color:#ffe19b}
+body:not([data-route=home]) .visit-teacher-badge{color:#ffde8b;background:#ffc94a20;border-radius:99px}
+body:not([data-route=home]) .map-credit{color:#c1ceb5}
+body:not([data-route=home]) :is(.game-stats,.game-panel,.card,.visit-book-spread) a:not(.btn):not(.kid-primary):hover{text-decoration-color:#ffc94a}
+@media(max-width:900px){body:not([data-route=home])>.site-header{gap:14px;padding:18px 20px;flex-wrap:wrap;justify-content:space-between}body:not([data-route=home]) .site-header nav{order:3;width:100%;justify-content:center}body:not([data-route=home]) .site-header nav a{flex:1;text-align:center;padding:9px 10px;font-size:13px}body:not([data-route=home]) .site-header .brand{font-size:20px}body:not([data-route=home]) .header-enter{font-size:12px;max-width:165px;padding:10px 12px}body:not([data-route=home]) .page-heading{padding:22px 0 24px}body:not([data-route=home]) .page-heading h1{font-size:clamp(27px,6vw,43px)}body:not([data-route=home]) .site-footer{gap:18px;grid-template-columns:1fr;font-size:13px}body:not([data-route=home]) .site-footer>div{justify-content:flex-start;flex-wrap:wrap;gap:20px}body:not([data-route=home]) .game-stats span{font-size:12px}body:not([data-route=home]) .game-panel{border-radius:24px}}
+@media(max-width:430px){body:not([data-route=home]) #app{padding-inline:18px}body:not([data-route=home]) .site-header nav a{padding-inline:7px;font-size:12px}body:not([data-route=home]) .site-header .brand{font-size:18px}body:not([data-route=home]) .header-enter{max-width:155px}body:not([data-route=home]) .page-heading h1{font-size:27px;line-height:1.22}}
+@media(prefers-reduced-motion:reduce){body:not([data-route=home]) *{scroll-behavior:auto}}
+@media print{body:not([data-route=home]){background:#fff!important;color:#173423!important}body:not([data-route=home]):before,body:not([data-route=home]):after{display:none}body:not([data-route=home]) :is(.game-panel,.card,.game-stats){background:#fff!important;color:#173423!important;box-shadow:none!important;backdrop-filter:none!important}body:not([data-route=home]) :is(.game-panel,.card,.game-stats) :is(p,h2,h3,strong,span,li),body:not([data-route=home]) :is(td,th){color:#173423!important}}
+/* Creator contrast: glass containers and cream choice cards have independent ink. */
+body:not([data-route=home]) .site-header a.brand{color:#fff4d5!important}
+body:not([data-route=home]) .site-header a.brand>img{filter:brightness(1.55) saturate(1.15)}
+body[data-route=character] .hero-studio{--hero-ink:#fff3d3;--hero-paper:#214a34;--hero-line:#ffffff38;--hero-gold:#ffc94a;color:#fff3d3}
+body[data-route=character] .hero-studio :is(.hero-studio-options,.hero-studio-preview,.hero-studio-path){background:linear-gradient(145deg,#294f3ce8,#163b2af2);border-color:#ffffff35;color:#fff3d3}
+body[data-route=character] .hero-studio :is(h2,h3,label,.hero-stat){color:#fff3d3}
+body[data-route=character] .hero-studio :is(.hero-studio-hint,#heroSummary){color:#d3dec5}
+body[data-route=character] .onboard-steps>li{color:#d0dcc4}
+body[data-route=character] .onboard-steps>li.active{color:#ffe197}
+body[data-route=character] .onboard-steps>li>span{background:#ffffff16;color:#d7e3cc}
+body[data-route=character] .onboard-steps>li:is(.active,.done)>span{background:#ffc94a;color:#203b27}
+body[data-route=character] .hero-studio :is(.hero-option,.hero-studio-tabs button,.hero-studio-paths button){--hero-ink:#254b38;color:#254b38}
+body[data-route=character] .hero-studio :is(.hero-option,.hero-studio-tabs button,.hero-studio-paths button) :is(strong,small,span){color:#254b38}
+body[data-route=character] .hero-studio .hero-studio-paths small{color:#536846}
+body[data-route=character] .hero-studio .hero-studio-paths button[aria-pressed=true]{background:#f9df93;border-color:#ffc94a;box-shadow:0 4px 0 #c2943155}
+body[data-route=character] .hero-studio .hero-option.selected{background:#e8efcd;border-color:#a6cf7a;box-shadow:0 4px 0 #719b4255}
+body[data-route=character] .hero-studio .hero-created{--hero-ink:#254b38;background:#fff5dc;color:#254b38}
+body[data-route=character] .hero-studio .hero-created :is(h2,h3,strong){color:#254b38}
+body[data-route=character] .hero-studio .hero-created p{color:#536846}
+body[data-route=character] .hero-studio .error{color:#ffb7a4}
+body[data-route=map] #app{max-width:none;padding:0;width:100%}
+body[data-route=character] .hero-studio .kid-primary{color:#172b1d;background:linear-gradient(#ffda73,#ffc94a);border:1px solid #ffdb7b;border-radius:20px;box-shadow:0 5px 0 #a77a1e,0 12px 26px #0002;font:900 17px Nunito,system-ui,sans-serif;min-height:50px;letter-spacing:0}
+/* Full-bleed map landscape and an uncropped traveller portrait. */
+body[data-route=map]{--map-sky:#2b3a67;--map-horizon:#e89c79;background:linear-gradient(180deg,var(--map-sky),var(--map-horizon) 75%,#284d37) fixed}
+body[data-route=map][data-map-time=day]{--map-sky:#3b95dc;--map-horizon:#c3e3e9}
+body[data-route=map][data-map-time=dusk]{--map-sky:#1a1440;--map-horizon:#b9574c}
+body[data-route=map]:before,body[data-route=map]:after{display:none}
+body[data-route=map] main#app{max-width:none;width:100%;margin:0;padding:0}
+body[data-route=map]>.site-header{background:transparent}
+body[data-route=map] .discovery-atlas{background:transparent}
+body[data-route=map] .discovery-scenery{position:fixed;inset:0;background:linear-gradient(var(--dm-sky),var(--dm-horizon) 75%,#284d37)}
+.discovery-player>.game-character{width:48px!important;min-width:48px!important;height:68px!important;flex:0 0 48px;overflow:visible;align-items:flex-end}
+.discovery-player>.game-character .character-sprite{width:auto!important;height:62px!important;aspect-ratio:2/3;flex:none}
+.discovery-player>.game-character .character-hat{top:1%;left:27%;width:40%}
+@media(max-width:480px){.discovery-player>.game-character{width:38px!important;min-width:38px!important;height:58px!important;flex-basis:38px}.discovery-player>.game-character .character-sprite{height:52px!important}}
