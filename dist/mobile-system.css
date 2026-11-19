@@ -5,10 +5,10 @@
   body:not([data-route=home]) main#app{padding-inline:var(--mobile-gutter);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
   body[data-route=map] main#app{padding:0}
   body:not([data-route=home]) .page-heading{padding:24px 0;margin:0}
-  body:not([data-route=home]) .page-heading h1{font-size:clamp(27px,7vw,32px);line-height:1.2;letter-spacing:-.035em;overflow-wrap:normal;word-break:normal;hyphens:auto}
+  body:not([data-route=home]) .page-heading h1{font-size:clamp(27px,7vw,32px);line-height:1.2;letter-spacing:-.035em;overflow-wrap:normal;word-break:normal;hyphens:none;-webkit-hyphens:none}
   body :is(.game-world,.visit-shell,.story-game,.hero-studio){width:100%;min-width:0;max-width:100%;margin-top:0}
   body :is(.game-panel,.card,.hero-studio-grid>section,.visit-wardrobe-controls,.visit-wardrobe-preview,.story-dialogue,.story-booklet-copy,.visit-tutorial-copy){padding:24px 20px;box-sizing:border-box;min-width:0}
-  body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) :is(h2,h3){overflow-wrap:normal;word-break:normal;hyphens:auto}
+  body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) :is(h2,h3){overflow-wrap:normal;word-break:normal;hyphens:none;-webkit-hyphens:none}
   body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) h2{font-size:27px;line-height:1.25;letter-spacing:-.025em}
   body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) h3{font-size:21px;line-height:1.3;letter-spacing:-.015em}
   body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) :is(p,li){font-size:17px;line-height:1.65}
@@ -16,7 +16,7 @@
   body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) :is(h2,h3,p,ul,ol){margin-top:0}
   body :is(.game-panel,.card,.visit-shell,.story-game,.hero-studio) p{margin-bottom:20px}
   body :is(button:not([data-v-cell]),input:not([type=radio]):not([type=checkbox]),select,textarea){min-height:44px;box-sizing:border-box;touch-action:manipulation}
-  body :is(.btn,.kid-primary,.fs-primary-link,.answer,.story-word-answer,.story-grandma-answer,.guide-pick){min-height:52px!important;min-width:0;max-width:100%;padding:14px 18px;font-size:16px!important;line-height:1.35;font-weight:900;letter-spacing:0;box-sizing:border-box;white-space:normal;overflow-wrap:break-word;touch-action:manipulation}
+  body :is(.btn,.kid-primary,.fs-primary-link,.answer,.story-word-answer,.story-grandma-answer,.guide-pick){min-height:52px!important;min-width:0;max-width:100%;padding:14px 18px;font-size:16px!important;line-height:1.35;font-weight:900;letter-spacing:0;box-sizing:border-box;white-space:normal;overflow-wrap:normal;touch-action:manipulation}
   body :is(.btn.secondary,.game-text-link,.text-link){min-height:48px!important;font-size:15px!important;line-height:1.4}
   body :is(.game-text-link,.text-link){display:inline-flex;align-items:center;justify-content:center;padding:10px 8px;margin:0;box-sizing:border-box}
   body :is(input:not([type=radio]):not([type=checkbox]),select,textarea){width:100%;max-width:100%;font-size:17px!important;line-height:1.4;min-height:52px;padding:14px 16px!important;border-radius:16px;scroll-margin-top:24px}
@@ -94,7 +94,7 @@
   body .discovery-map-note button{min-height:44px;min-width:44px;font-size:14px}
   body .discovery-location{display:grid;grid-template-columns:1fr;gap:20px;padding:20px;margin-top:24px}
   body .discovery-postcard{height:144px;width:100%;grid-row:auto;grid-column:auto;border-radius:16px}
-  body .discovery-location h2{font-size:27px;line-height:1.25;overflow-wrap:normal;word-break:normal;hyphens:auto;margin-bottom:12px}
+  body .discovery-location h2{font-size:27px;line-height:1.25;overflow-wrap:normal;word-break:normal;hyphens:none;-webkit-hyphens:none;margin-bottom:12px}
   body .discovery-location-copy p{font-size:17px;line-height:1.6}
   body .discovery-location-action{grid-column:auto;padding-top:4px}
   body .discovery-location-action .kid-primary{width:100%;margin:20px 0 0}
@@ -192,7 +192,7 @@
   body .game-stats strong{font-size:27px;line-height:1.2}
   body .game-stats span{font-size:14px;line-height:1.4;text-align:right;max-width:60%}
   body :is(.game-profile-info,.game-page-intro,.game-reading-copy){min-width:0}
-  body .game-profile-info h2{overflow-wrap:anywhere}
+  body .game-profile-info h2{overflow-wrap:normal}
   body .game-profile-info p{font-size:17px;line-height:1.6}
   body :is(.game-guide-topics,.guide-options){display:grid;grid-template-columns:1fr;gap:12px}
   body :is(.game-guide-topics,.guide-options)>button{min-height:52px!important;width:100%;font-size:16px!important;text-align:left;line-height:1.4}
