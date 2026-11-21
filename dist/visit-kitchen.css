@@ -1,0 +1,142 @@
+.vk-kitchen {
+  --vk-ink: #32241d;
+  --vk-accent: #a6442d;
+  --vk-cream: #fff5e2;
+  --vk-green: #38684b;
+  max-width: 58rem;
+  margin-inline: auto;
+  padding: clamp(.75rem, 2.5vw, 1.5rem);
+  border-radius: 1.4rem;
+  color: var(--vk-ink);
+  background: var(--vk-cream);
+  box-shadow: 0 8px 0 #090f0c45;
+}
+.vk-kitchen h2, .vk-kitchen h3, .vk-kitchen p { color: inherit; margin: 0; }
+.vk-heading { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+.vk-heading h2 { font-size: clamp(1.45rem, 4vw, 2.15rem); }
+.vk-heading p { margin-top: .15rem; font-size: 1rem; }
+.vk-heading > span { color: #733626; font-size: .875rem; font-weight: 900; white-space: nowrap; }
+.vk-menu {
+  list-style: none; padding: 0; margin: 1rem 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem;
+}
+.vk-menu > li {
+  padding: .55rem; background: #f3e4ca; border: 1px solid transparent;
+  border-radius: .75rem; display: flex; align-items: center; gap: .45rem;
+  font-size: .875rem; line-height: 1.2;
+}
+.vk-menu > li[aria-current] { border-color: #b65c41; background: #fbe3cb; }
+.vk-menu > li > span {
+  display: grid; place-items: center; flex-shrink: 0; width: 1.5rem;
+  aspect-ratio: 1; border-radius: 50%; background: #785541; color: white; font-weight: 800;
+}
+.vk-menu small { display: block; margin-top: .15rem; font-size: .875rem; }
+.vk-stage {
+  overflow: clip; border-radius: 1.1rem; border: 1px solid #c99268;
+  background: repeating-conic-gradient(#ffe0b8 0 25%, #ffebcc 0 50%) 0 0 / 40px 40px;
+}
+.vk-instruction {
+  text-align: center; padding: .75rem .75rem .65rem;
+  background: #fff9eafa; border-bottom: 1px solid #dec29e;
+}
+.vk-instruction h3 { font-size: clamp(1.1rem, 3vw, 1.5rem); margin: .35rem 0 .1rem; }
+.vk-instruction p { font-size: .9375rem; }
+.vk-stage progress { accent-color: var(--vk-green); width: min(15rem, 90%); height: .55rem; vertical-align: middle; }
+.vk-tray {
+  position: relative; z-index: 2; display: flex; justify-content: center;
+  gap: .45rem; padding: .75rem .25rem .2rem;
+}
+.vk-tray-tools { padding: .3rem 0 0; }
+.vk-kitchen button {
+  font: inherit; font-weight: 900; border-radius: .75rem; padding: .4rem .65rem;
+  cursor: pointer; line-height: 1.15; min-height: 44px;
+}
+.vk-tray button {
+  display: grid; place-items: center; gap: .25rem; width: clamp(5rem, 23%, 8rem);
+  color: var(--vk-ink); background: #fff8e9; border: 1px solid #c38f70;
+  box-shadow: 0 3px #b37b5b; font-size: .875rem; touch-action: none; user-select: none;
+}
+.vk-tray button span { font-size: 1.75rem; pointer-events: none; }
+.vk-tray button:disabled { color: #235337; background: #e2ecd6; box-shadow: none; cursor: default; }
+.vk-tray .vk-dragging { z-index: 4; position: relative; cursor: grabbing; }
+.vk-kitchen button:focus-visible { outline: 3px solid #2b6649; outline-offset: 3px; }
+.vk-counter {
+  display: grid; justify-items: center; gap: .25rem; padding: .85rem .5rem .45rem;
+}
+.vk-station {
+  width: min(100%, 20rem); height: clamp(9rem, 32vw, 13rem);
+  position: relative; display: grid; place-items: center; border-radius: 1rem;
+  outline-offset: 4px;
+}
+.vk-station.vk-drop { outline: 3px dashed var(--vk-green); background-color: #8caa6640; }
+.vk-swipe { cursor: grab; touch-action: none; user-select: none; }
+.vk-swipe:active { cursor: grabbing; }
+.vk-vessel {
+  position: relative; display: grid; grid-auto-flow: column; align-items: center;
+  justify-content: center; gap: .55rem; width: 65%; height: 73%;
+  background: #ffefd4; border: 6px solid #548573; border-radius: 50%;
+  box-shadow: 0 8px #2b5848, 0 13px 9px #59341840, inset 0 0 0 5px #e8dcc2;
+}
+.vk-board .vk-vessel {
+  width: 83%; border: 5px solid #985832; border-radius: 1rem;
+  background: repeating-linear-gradient(4deg, #dc9e5f 0 23px, #e3ab73 24px 48px);
+  box-shadow: 0 6px #78452b, 0 13px 9px #59341840, inset 0 0 0 3px #f0bc86;
+}
+.vk-pan, .vk-pot {
+  background: #526261; border: 4px solid #374947; box-shadow: 0 5px #293938;
+}
+.vk-pan .vk-vessel, .vk-pot .vk-vessel {
+  width: 54%; height: 82%; background: #363b39; border: 7px solid #aeb6a5;
+  box-shadow: 0 5px #26302d, inset 0 0 0 4px #535b55;
+}
+.vk-pot .vk-vessel { background: #685143; border-color: #cad2cd; }
+.vk-pan .vk-vessel::after, .vk-pot .vk-vessel::after, .vk-pot .vk-vessel::before {
+  content: ''; position: absolute; z-index: 0; height: 1rem; width: 2.2rem;
+  right: -2rem; top: 43%; border-radius: .4rem; background: #303633; border: 2px solid #202724;
+}
+.vk-pot .vk-vessel::before { right: auto; left: -2rem; }
+.vk-plate .vk-vessel { border-color: #d8a557; box-shadow: 0 6px #a47639, inset 0 0 0 5px #f7d69e; }
+.vk-station-label {
+  padding: .15rem .6rem; border-radius: .55rem; color: #5a351f; background: #fff8e8;
+  font-size: .875rem; font-weight: 900;
+}
+.vk-picture { font-size: clamp(1.45rem, 5vw, 2.6rem); z-index: 1; }
+.vk-tool { position: absolute; right: 10%; bottom: 8%; font-size: 2.6rem; z-index: 1; transform: rotate(-22deg); }
+.vk-food { position: absolute; inset: 10%; pointer-events: none; }
+.vk-food i {
+  position: absolute; left: var(--x); top: var(--y); transform: rotate(var(--r));
+  width: 1.7rem; height: .45rem; border-radius: .25rem; background: #ffe4a5; box-shadow: 0 2px #aa774888;
+}
+.vk-food-plates i, .vk-food-boiled i { width: 1.05rem; height: .8rem; border-radius: .12rem; }
+.vk-food-noodles i { width: 2.1rem; height: .22rem; }
+.vk-food-fried i { background: #ec9d29; box-shadow: 0 2px #ac6228; }
+.vk-food-sheet i, .vk-food-dough i {
+  width: 68%; height: 67%; left: 16%; top: 16%; border-radius: 45%; transform: none;
+}
+.vk-food-dough i { width: 47%; height: 72%; left: 26%; border-radius: 50%; }
+.vk-controls {
+  display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+  gap: .5rem; padding: .3rem .5rem .65rem; min-height: 2.5rem;
+}
+.vk-controls button { color: white; background: var(--vk-accent); border: 1px solid #813923; }
+.vk-controls button:disabled { opacity: .75; cursor: default; }
+.vk-controls progress { width: min(7rem, 28%); }
+.vk-controls p { font-size: .875rem; font-weight: 800; }
+.vk-controls p:empty { display: none; }
+.vk-kitchen .vk-note { margin-top: .75rem; font-size: .875rem; }
+.vk-heating .vk-vessel { animation: vk-simmer .55s ease-in-out infinite alternate; }
+.vk-heating::after {
+  content: ''; height: .45rem; width: 35%; background: #ffb54a; border-radius: 1rem;
+  position: absolute; bottom: .25rem; box-shadow: 0 0 16px #ff8b44;
+}
+@keyframes vk-simmer { to { filter: brightness(1.2); } }
+@media (prefers-reduced-motion: reduce) { .vk-heating .vk-vessel { animation: none; } }
+.vk-feast { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #f3e4ca; border-radius: 1rem; margin-bottom: .75rem; }
+.vk-feast figure { margin: .4rem; text-align: center; font-weight: 800; }
+.vk-feast svg.visit-food-art { display: block; width: min(100%, 8rem); height: auto; margin: auto; }
+@media (max-width: 520px) {
+  .vk-menu > li { align-items: start; flex-direction: column; gap: .25rem; padding: .4rem; }
+  .vk-heading { align-items: flex-start; }
+  .vk-heading p { font-size: .875rem; }
+}
+.vk-tool-in-use { right: auto; bottom: auto; transform: translate(-50%, -50%) rotate(-22deg); }
