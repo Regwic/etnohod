@@ -27,7 +27,6 @@ function resetCurrentCharacter(){
 }
 function render(){if(typeof firstScreenCleanup==='function')firstScreenCleanup();if(typeof visitFlushTime==='function')visitFlushTime();if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();const [route='home',arg]=(location.hash.slice(1)||'home').split('/'),u=user();
 if(['map','region','story','lesson','quiz','result','profile','tutorial','book','wardrobe'].includes(route)){if(!u){location.hash='home';return}if(!u.character){location.hash='character';return}}
-if(route==='map'&&u&&!u.tutorialDone){location.hash='tutorial';return}
 if(route==='home'){layout('Живой атлас культур',firstScreenHome(u));wireFirstScreen()}
 else if(route==='login')visitLoginPage(arg==='return');
 else if(route==='tutorial'){layout('Путешествия начинаются с любопытства',visitTutorialPage(u));wireVisitTutorial(u)}

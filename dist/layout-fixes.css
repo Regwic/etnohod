@@ -73,3 +73,23 @@ body[data-route="character"] .hero-studio-options h3{font-size:17px}
  body[data-route="character"] .hero-studio-preview{grid-row:1}
  body[data-route="character"] .hero-studio-paths{grid-template-columns:1fr}
 }
+
+/* Completion opens the atlas so the player chooses the destination. */
+.hero-created{width:min(440px,calc(100vw - 32px));padding:0 24px 24px;box-sizing:border-box;border:1px solid #e8ce8f;border-radius:26px;box-shadow:0 24px 80px #071c2070;color:#254b38}
+.hero-created-scene{position:relative;height:220px;margin:0 -24px 22px;background:#b6cba0 url('assets/hero-clearing.png') center 58%/cover;overflow:hidden;border-radius:24px 24px 0 0}
+.hero-created-scene .hero-created-art{position:absolute;inset:12px 0 12px;height:auto;align-items:flex-end}
+.hero-created-scene .hero-created-art>.game-character{height:190px;filter:drop-shadow(0 6px 4px #18372d44)}
+.hero-created-helper{position:absolute;bottom:12px;right:calc(50% - 140px);height:100px;width:92px;object-fit:contain;filter:drop-shadow(0 5px 4px #18372d44)}
+.hero-created #heroCreatedTitle{font-size:26px;line-height:1.2;margin:0 0 12px;color:#254b38}
+.hero-created #heroCreatedName{font-size:23px;line-height:1.25;overflow-wrap:anywhere;margin:0 0 6px;color:#254b38}
+.hero-created #heroCreatedPath{display:inline-block;padding:5px 14px;border-radius:99px;background:#e7eddb;color:#526b40;font-size:13px;margin:0 0 12px}
+.hero-created p{font-size:15px;line-height:1.65;color:#536747}
+.hero-created #heroContinue{min-height:50px;margin-top:4px}
+@media(max-width:480px){.hero-created-scene{height:190px}.hero-created-scene .hero-created-art>.game-character{height:165px}.hero-created-helper{height:85px;width:75px;right:calc(50% - 120px)}.hero-created #heroCreatedTitle{font-size:23px}}
+
+/* Match the atlas shell to the rest of the adventure. */
+body[data-route="map"]{background:radial-gradient(ellipse at 80% 0,#42684d66,transparent 55%),linear-gradient(160deg,#193f2e,#10291f 60%,#0c2119)}
+body[data-route="map"]:before{display:block}
+body[data-route="map"]:after{display:block}
+body[data-route="map"] .discovery-atlas{background:transparent}
+.visit-companion>img{display:block;width:100%;height:100%;object-fit:contain}
