@@ -63,6 +63,17 @@
   width: clamp(4.25rem, 18%, 9.4rem);
 }
 .room-position:has(.room-placed) { z-index: 2; }
+/* Match the painted foot of each object to its support at any scene size. */
+.room-position:is([data-room-object="saddle"], [data-room-object="samovar"]):has(.room-placed) {
+  transform: translate(-50%, -87%);
+}
+.room-position[data-room-object="pillow"]:has(.room-placed) {
+  transform: translate(-50%, -80%);
+}
+.room-position[data-room-object="pillow"] .room-object {
+  transform: rotate(-6deg) scaleY(.83);
+  transform-origin: center 80%;
+}
 .room-position:focus-within { z-index: 3; }
 .room-scene button.room-target {
   display: grid;
@@ -157,7 +168,9 @@
   .room-scene { min-height: 20rem; }
   .room-fact { width: clamp(4.9rem, 23vw, 7rem); }
   .room-position:has(.room-placed) { width: 23%; }
-  .room-position[data-room-object="felt"] { left: 25%; }
   .room-position[data-room-object="kumgan"] { left: 58%; }
   .room-position[data-room-object="towel"] { left: 83%; }
+  .room-position[data-room-object="cauldron"] .room-fact { bottom: calc(83% + 1.45rem); }
+  .room-position[data-room-object="samovar"] .room-fact { left: 118%; }
+  .room-position[data-room-object="felt"] .room-fact { bottom: 55%; }
 }

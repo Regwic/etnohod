@@ -117,3 +117,47 @@ body[data-route=map] .discovery-scenery{position:fixed;inset:0;background:linear
 .discovery-player>.game-character .character-sprite{width:auto!important;height:62px!important;aspect-ratio:2/3;flex:none}
 .discovery-player>.game-character .character-hat{top:1%;left:27%;width:40%}
 @media(max-width:480px){.discovery-player>.game-character{width:38px!important;min-width:38px!important;height:58px!important;flex-basis:38px}.discovery-player>.game-character .character-sprite{height:52px!important}}
+
+/* The phrase card uses the same forest, ivory and gold palette as the story. */
+body[data-route="story"] .visit-language .visit-phrase {
+  padding: clamp(1rem, 3vw, 1.65rem);
+  background: linear-gradient(145deg, #254b3a, #182f26);
+  border: 1px solid #987d4b;
+  border-radius: 1rem;
+  box-shadow: 0 4px 0 #102a21;
+  color: #fff2d0;
+}
+body[data-route="story"] .visit-language .visit-phrase h3 {
+  color: #ffdc88;
+  margin: 0 0 .65rem;
+}
+body[data-route="story"] .visit-language .visit-phrase p {
+  color: #fff2d0;
+  margin: 0 0 .85rem;
+  line-height: 1.5;
+}
+body[data-route="story"] .visit-language .visit-pronunciation { font-weight: 900; }
+body[data-route="story"] .visit-language .visit-phrase > button.btn.secondary {
+  color: #243426;
+  background: linear-gradient(#ffe39f, #f0bc50);
+  border-color: #f3cd73;
+  box-shadow: 0 3px 0 #aa7d36;
+}
+body[data-route="story"] .visit-language .visit-phrase > button.btn.secondary:hover { background: #ffe09a; }
+body[data-route="story"] .visit-language .visit-phrase .visit-audio-status {
+  color: #ffe3a3 !important;
+  margin-top: .5rem;
+}
+body[data-route="story"] .visit-language .visit-phrase .visit-audio-credit {
+  color: #e3d7b7 !important;
+  border-color: #caa76280;
+  margin: .8rem 0 0;
+  padding-top: .65rem;
+  font-size: .82rem !important;
+}
+body[data-route="story"] .visit-language .visit-audio-credit a { color: #ffdc88; }
+body[data-route="story"] .visit-language .story-language-grid button.btn.secondary[aria-pressed="true"] {
+  background: #ffe09a;
+  border-color: #f3cd73;
+  color: #213629;
+}

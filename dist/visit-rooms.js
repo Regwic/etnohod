@@ -6,8 +6,8 @@ const visitRooms = [
     source: 'https://museumrb.ru/novosti/bashkirskaja-jurta-zhurnal-mir-muzeja/',
     items: [
       { id: 'chest', name: 'Сундук', spot: 'Подставка у стены', x: 76, y: 56, use: 'В нём хранили одежду и вещи.' },
-      { id: 'felt', name: 'Кошма', spot: 'Пол юрты', x: 30, y: 85, use: 'Плотный войлок утеплял пол юрты.' },
-      { id: 'saddle', name: 'Седло', spot: 'У входа', x: 19, y: 49, use: 'Помогало всаднику держаться на лошади.' },
+      { id: 'felt', name: 'Кошма', spot: 'Пол юрты', x: 34, y: 87, use: 'Утепляла пол юрты.' },
+      { id: 'saddle', name: 'Седло', spot: 'Подставка у входа', x: 17, y: 68, use: 'Помогало всаднику держаться на лошади.' },
       { id: 'kumgan', name: 'Кумган', spot: 'Столик для умывания', x: 55, y: 78, use: 'Из него лили воду для умывания.' }
     ]
   },
@@ -18,8 +18,8 @@ const visitRooms = [
     source: 'https://kitaptar.bashkort.org/files/bashkiry.etnicheskaya_istoriya_i_traditsionnaya_kultura._ufa._2002.pdf',
     items: [
       { id: 'towel', name: 'Вышитое полотенце', spot: 'Крючок на стене', x: 85, y: 39, use: 'Украшало стены дома.' },
-      { id: 'samovar', name: 'Самовар', spot: 'Стол для чаепития', x: 30, y: 75, use: 'В нём кипятили воду для чая.' },
-      { id: 'pillow', name: 'Подушка', spot: 'Нары у стены', x: 73, y: 80, use: 'На ней было мягче спать.' },
+      { id: 'samovar', name: 'Самовар', spot: 'Стол для чаепития', x: 24, y: 75, use: 'В нём кипятили воду для чая.' },
+      { id: 'pillow', name: 'Подушка', spot: 'Нары у стены', x: 75, y: 74, use: 'На ней было мягче спать.' },
       { id: 'cauldron', name: 'Казан', spot: 'Очаг', x: 16, y: 53, use: 'В нём варили еду над огнём.' }
     ]
   }
@@ -49,7 +49,7 @@ function renderVisitRooms(s) {
         `<button type="button" data-room-index="${i}" aria-pressed="${i === index}" ${i === 1 && !visitRoomComplete(s, visitRooms[0]) ? 'disabled' : ''}>${i === 0 ? 'Юрта' : 'Дом'}</button>`).join('')}</div>
     </header>
     <div class="room-scene" data-room="${room.id}">
-      <img class="room-backdrop" src="assets/rooms/${room.id}.webp" alt="" width="1000" height="600" draggable="false">
+      <img class="room-backdrop" src="assets/rooms/${room.id === 'yurt' ? 'yurt-v2' : room.id}.webp" alt="" width="1000" height="600" draggable="false">
       ${[...room.items].sort((a,b) => a.y - b.y).map(item => {
         const found = placed.includes(item.id);
         return `<div class="room-position" data-room-object="${item.id}" style="--room-x:${item.x}%;--room-y:${item.y}%">
