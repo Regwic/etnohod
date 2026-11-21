@@ -56,7 +56,11 @@
   color: var(--vk-ink); background: #fff8e9; border: 1px solid #c38f70;
   box-shadow: 0 3px #b37b5b; font-size: .875rem; touch-action: none; user-select: none;
 }
-.vk-tray button span { font-size: 1.75rem; pointer-events: none; }
+.vk-ingredient {
+  display: grid; place-items: center; width: 3.25rem; aspect-ratio: 6 / 5;
+  font-size: 1.75rem; pointer-events: none;
+}
+.vk-ingredient-art { display: block; width: 100%; height: auto; }
 .vk-tray button:disabled { color: #235337; background: #e2ecd6; box-shadow: none; cursor: default; }
 .vk-tray .vk-dragging { z-index: 4; position: relative; cursor: grabbing; }
 .vk-kitchen button:focus-visible { outline: 3px solid #2b6649; outline-offset: 3px; }
@@ -72,8 +76,8 @@
 .vk-swipe { cursor: grab; touch-action: none; user-select: none; }
 .vk-swipe:active { cursor: grabbing; }
 .vk-vessel {
-  position: relative; display: grid; grid-auto-flow: column; align-items: center;
-  justify-content: center; gap: .55rem; width: 65%; height: 73%;
+  position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 5.75rem); align-items: center;
+  justify-content: center; padding: 0 5%; width: 65%; height: 73%;
   background: #ffefd4; border: 6px solid #548573; border-radius: 50%;
   box-shadow: 0 8px #2b5848, 0 13px 9px #59341840, inset 0 0 0 5px #e8dcc2;
 }
@@ -100,20 +104,12 @@
   padding: .15rem .6rem; border-radius: .55rem; color: #5a351f; background: #fff8e8;
   font-size: .875rem; font-weight: 900;
 }
-.vk-picture { font-size: clamp(1.45rem, 5vw, 2.6rem); z-index: 1; }
-.vk-tool { position: absolute; right: 10%; bottom: 8%; font-size: 2.6rem; z-index: 1; transform: rotate(-22deg); }
-.vk-food { position: absolute; inset: 10%; pointer-events: none; }
-.vk-food i {
-  position: absolute; left: var(--x); top: var(--y); transform: rotate(var(--r));
-  width: 1.7rem; height: .45rem; border-radius: .25rem; background: #ffe4a5; box-shadow: 0 2px #aa774888;
+.vk-picture { display: block; width: 100%; height: auto; z-index: 1; pointer-events: none; }
+.vk-picture:only-child { width: min(140%, 7rem); justify-self: center; }
+.vk-tool {
+  position: absolute; right: 5%; bottom: 3%; width: clamp(3.5rem, 21%, 4.75rem);
+  height: auto; z-index: 2; transform: rotate(-22deg); pointer-events: none;
 }
-.vk-food-plates i, .vk-food-boiled i { width: 1.05rem; height: .8rem; border-radius: .12rem; }
-.vk-food-noodles i { width: 2.1rem; height: .22rem; }
-.vk-food-fried i { background: #ec9d29; box-shadow: 0 2px #ac6228; }
-.vk-food-sheet i, .vk-food-dough i {
-  width: 68%; height: 67%; left: 16%; top: 16%; border-radius: 45%; transform: none;
-}
-.vk-food-dough i { width: 47%; height: 72%; left: 26%; border-radius: 50%; }
 .vk-controls {
   display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
   gap: .5rem; padding: .3rem .5rem .65rem; min-height: 2.5rem;
@@ -133,9 +129,10 @@
 @media (prefers-reduced-motion: reduce) { .vk-heating .vk-vessel { animation: none; } }
 .vk-feast { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #f3e4ca; border-radius: 1rem; margin-bottom: .75rem; }
 .vk-feast figure { margin: .4rem; text-align: center; font-weight: 800; }
-.vk-feast svg.visit-food-art { display: block; width: min(100%, 8rem); height: auto; margin: auto; }
+.vk-feast .vk-served { display: block; width: min(100%, 8rem); height: auto; margin: auto; }
 @media (max-width: 520px) {
   .vk-menu > li { align-items: start; flex-direction: column; gap: .25rem; padding: .4rem; }
+  .vk-menu > li > div { max-width: 100%; overflow-wrap: anywhere; }
   .vk-heading { align-items: flex-start; }
   .vk-heading p { font-size: .875rem; }
 }

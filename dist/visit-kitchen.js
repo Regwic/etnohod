@@ -1,14 +1,14 @@
 /* Cooking chapter. Completed dishes retain the story's existing save format. */
 const kitchenProducts = {
-  egg: ['🥚', 'Яйцо'], flour: ['🌾', 'Мука'], salt: ['🧂', 'Соль'],
-  oil: ['🫗', 'Масло'], honey: ['🍯', 'Мёд'], sugar: ['🥄', 'Сахар'],
-  dough: ['🟡', 'Тесто'], strips: ['🍜', 'Кусочки теста'],
-  fried: ['🟠', 'Обжаренные кусочки'], syrup: ['🍯', 'Медовый сироп'],
-  water: ['💧', 'Вода'], meat: ['🥩', 'Мясо'], plates: ['◈', 'Пласты теста'],
-  broth: ['🥣', 'Горячий бульон'], onion: ['🧅', 'Лук'],
-  boiled: ['◈', 'Варёные пласты'], cookedMeat: ['🍖', 'Отварное мясо'],
-  onions: ['🧅', 'Мягкий лук'], noodles: ['🍜', 'Сырая лапша'],
-  soup: ['🥘', 'Суп с лапшой'], chak: ['🍯', 'Чак-чак']
+  egg: 'Яйцо', flour: 'Мука', salt: 'Соль',
+  oil: 'Масло', honey: 'Мёд', sugar: 'Сахар',
+  dough: 'Тесто', strips: 'Кусочки теста',
+  fried: 'Обжаренные кусочки', syrup: 'Медовый сироп',
+  water: 'Вода', meat: 'Мясо', plates: 'Пласты теста',
+  broth: 'Горячий бульон', onion: 'Лук',
+  boiled: 'Варёные пласты', cookedMeat: 'Отварное мясо',
+  onions: 'Мягкий лук', noodles: 'Сырая лапша',
+  soup: 'Суп с лапшой', chak: 'Чак-чак'
 };
 const kitchenAdd = (station, title, ...items) => ({ station, title, items });
 const kitchenWork = (station, title, action, art, moves = 3) => ({ station, title, action, art, moves });
@@ -73,14 +73,11 @@ function visitKitchenState(s) {
   return { index, dish, progress, step };
 }
 
-function kitchenFood(art) {
-  if (!art) return '';
-  if (['sheet', 'dough', 'plates', 'boiled', 'strips', 'fried', 'noodles'].includes(art)) {
-    const count = art === 'sheet' || art === 'dough' ? 1 : 10;
-    return `<span class="vk-food vk-food-${art}" aria-hidden="true">${Array.from({length: count}, (_, i) =>
-      `<i style="--x:${18 + i * 29 % 64}%;--y:${18 + i * 19 % 64}%;--r:${i * 23 % 80 - 40}deg"></i>`).join('')}</span>`;
-  }
-  return `<span class="vk-picture" aria-hidden="true">${kitchenProducts[art][0]}</span>`;
+const kitchenTools = { 'Раскатать': 'rolling-pin', 'Нарезать': 'knife' };
+const kitchenFeastArt = { chakchak: 'chak', beshbarmak: 'beshbarmak', tukmach: 'soup' };
+
+function kitchenImage(id, className) {
+  return `<img class="${className}" src="assets/kitchen/${id}.png" alt="" width="192" height="160" draggable="false">`;
 }
 
 function renderVisitCooking(u, s) {
@@ -92,7 +89,7 @@ function renderVisitCooking(u, s) {
       <small>${done ? 'На столе' : i === index ? 'Готовим' : 'В меню'}</small></div></li>`;
   }).join('')}</ol>`;
   if (!dish) return `<section class="vk-kitchen"><h2 tabindex="-1" id="vk-step">Праздничный стол готов!</h2>${table}
-    <div class="vk-feast">${kitchenDishes.map(item => `<figure>${visitFoodArt(item.id)}<figcaption>${item.title}</figcaption></figure>`).join('')}</div>
+    <div class="vk-feast">${kitchenDishes.map(item => `<figure>${kitchenImage(kitchenFeastArt[item.id], 'vk-served')}<figcaption>${item.title}</figcaption></figure>`).join('')}</div>
     <p>Все блюда на столе. Теперь можно готовить праздничные наряды.</p></section>`;
 
   const { station, title, items, action, art, heat, moves } = step;
@@ -120,14 +117,14 @@ function renderVisitCooking(u, s) {
         <h3 id="vk-step" tabindex="-1">${title}</h3><p>${hint}</p>
       </div>
       <div class="vk-tray ${items ? '' : 'vk-tray-tools'}">${items ? items.map(id => {
-        const [icon, label] = kitchenProducts[id];
+        const label = kitchenProducts[id];
         const added = progress.added.includes(id);
-        return `<button type="button" data-vk-add="${id}" ${added ? 'disabled' : ''}><span aria-hidden="true">${added ? '✓' : icon}</span>${label}</button>`;
+        return `<button type="button" data-vk-add="${id}" ${added ? 'disabled' : ''}><span class="vk-ingredient" aria-hidden="true">${added ? '✓' : kitchenImage(id, 'vk-ingredient-art')}</span>${label}</button>`;
       }).join('') : ''}</div>
       <div class="vk-counter">
         <div class="vk-station vk-${station}" data-vk-station aria-hidden="true">
-          <div class="vk-vessel">${contents.slice(-3).map(kitchenFood).join('')}</div>
-          ${action ? `<span class="vk-tool">${action === 'Раскатать' ? '🪵' : action === 'Нарезать' ? '🔪' : '🥄'}</span>` : ''}
+          <div class="vk-vessel">${contents.slice(-3).map(id => kitchenImage(id, 'vk-picture')).join('')}</div>
+          ${action ? kitchenImage(kitchenTools[action] || 'spoon', 'vk-tool') : ''}
         </div>
         <span class="vk-station-label">${kitchenStations[station]}</span>
       </div>
