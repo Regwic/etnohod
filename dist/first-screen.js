@@ -1,6 +1,6 @@
 /* First screen adapted from the user-supplied HTML reference. */
 let firstScreenCleanup=null;
-function firstScreenHome(u){const ready=!!u?.character,progress=typeof kidProgress==='function'?kidProgress(u):{xp:0},route=ready?(u.tutorialDone?'map':'tutorial'):u?'character':'login',action=ready?'Продолжить путешествие':'Создать персонажа',completed=!!u?.story?.completed,badges=u?.rewards?.includes('kurai')?1:0;let time='day';try{time=localStorage.getItem('ethnohod-first-light')||time}catch{}if(!['dawn','day','dusk'].includes(time))time='day';return `<section class="first-screen" id="firstScreen" data-time="${time}"><div class="fs-landscape" aria-hidden="true">
+function firstScreenHome(u){const ready=!!u?.character,progress=typeof kidProgress==='function'?kidProgress(u):{xp:0},route=ready?(u.tutorialDone?'map':'tutorial'):u?'character':'login',action=ready?'Продолжить путешествие':'Создать персонажа';return `<section class="first-screen" id="firstScreen"><div class="fs-landscape" aria-hidden="true">
 <svg viewBox="0 0 1280 714" preserveAspectRatio="xMidYMid slice" focusable="false">
   <defs>
     <image id="fs-valley-image" href="assets/first-valley.webp" width="1280" height="714"/>
@@ -25,26 +25,10 @@ function firstScreenHome(u){const ready=!!u?.character,progress=typeof kidProgre
 <div class="fs-lens" aria-hidden="true"></div>
 <div class="fs-title-wrap"><h1 class="fs-title" aria-label="Этноход">${'ЭТНОХОД'.split('').map((c,i)=>`<span aria-hidden="true" style="--letter:${i}">${c}</span>`).join('')}</h1></div>
 <div class="fs-ui"><div class="fs-top"><a class="fs-logo" href="#home" aria-label="Этноход — главная"><svg width="34" height="34" viewBox="0 0 40 40" fill="none" stroke="#ffc94a" stroke-width="1.8" aria-hidden="true"><circle cx="20" cy="20" r="4" fill="#ffc94a"/><ellipse cx="20" cy="9" rx="3.5" ry="7"/><ellipse cx="20" cy="31" rx="3.5" ry="7"/><ellipse cx="9" cy="20" rx="7" ry="3.5"/><ellipse cx="31" cy="20" rx="7" ry="3.5"/></svg>этноход</a><nav class="fs-nav" aria-label="Навигация первого экрана"><a href="#${u?'map':'login'}">Карта</a><a href="#${u?'book':'login'}">Книга открытий</a><a href="#teacher">Учителю</a></nav><div class="fs-hud">${u?`<a href="#profile" aria-label="Открыть профиль ${esc(u.nick)}">${esc(u.nick)}</a><span>${progress.xp} опыта</span>`:'<a href="#login/return">Уже играю →</a>'}</div></div>
-<div class="fs-times" role="group" aria-label="Время суток">${[['dawn','Рассвет','🌅'],['day','День','☀️'],['dusk','Закат','🌇']].map(([id,name,icon])=>`<button type="button" data-fs-time="${id}" class="${time===id?'on':''}" aria-pressed="${time===id}" aria-label="${name}" title="${name}">${icon}</button>`).join('')}</div>
-<div class="fs-copy"><h2>${ready?'Новые открытия уже ждут тебя!':'Большое путешествие начинается с тебя!'}</h2><p>${ready?'Выбирай, к кому отправиться в гости. Готовь угощения, узнавай новые слова и собирай подарки для своего героя.':'Создай путешественника и отправляйся в гости к народам России. Данияр уже ждёт в Башкортостане — поможем его семье подготовиться к празднику!'}</p><div class="fs-copy-actions"><a class="fs-primary-link" href="#${route}">${action} <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M9 5h10v10"/></svg></a>${!u?'<a class="fs-return-link" href="#login/return">У меня есть персонаж →</a>':'<a class="fs-return-link" href="#wardrobe">Мой рюкзак →</a>'}</div><div class="fs-chips"><span>${kidIcon('compass')} ${completed?'Первая глава пройдена':'Башкортостан открыт'}</span><span>${kidIcon('star')} ${u?badges+' значков':'Подарки за приключение'}</span><a href="#${u?'book':'login'}">${kidIcon('book')} Моя книга</a></div></div>
-<a class="fs-cta" href="#${ready?'map':'about'}" aria-label="${ready?'Карта открытий':'Об игре'}"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="fs-cta-circle" d="M100 100m-82 0a82 82 0 1 1 164 0a82 82 0 1 1-164 0"/></defs><text><textPath href="#fs-cta-circle">${ready?'КАРТА ОТКРЫТИЙ · КАРТА ОТКРЫТИЙ':'ОБ ИГРЕ · ОТКРОЙ ЭТНОХОД · ОБ ИГРЕ'} · </textPath></text></svg><i><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></i></a></div></section>`}
+<div class="fs-copy"><h2>${ready?'Новые открытия уже ждут тебя!':'Большое путешествие начинается с тебя!'}</h2><p>${ready?'Выбирай, к кому отправиться в гости. Готовь угощения, узнавай новые слова и собирай подарки для своего героя.':'Создай путешественника и отправляйся в гости к народам России. Данияр уже ждёт в Башкортостане — поможем его семье подготовиться к празднику!'}</p><div class="fs-copy-actions"><a class="fs-primary-link" href="#${route}">${action} <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 19 5M9 5h10v10"/></svg></a>${!u?'<a class="fs-return-link" href="#login/return">У меня есть персонаж →</a>':'<a class="fs-return-link" href="#wardrobe">Мой рюкзак →</a>'}</div></div></div></section>`}
 function wireFirstScreen() {
   const root = document.querySelector('#firstScreen');
   if (!root) return;
-
-  const lighting = root.querySelectorAll('[data-fs-time]');
-  lighting.forEach(button => {
-    button.onclick = () => {
-      root.dataset.time = button.dataset.fsTime;
-      lighting.forEach(option => {
-        option.classList.toggle('on', option === button);
-        option.setAttribute('aria-pressed', String(option === button));
-      });
-      try {
-        localStorage.setItem('ethnohod-first-light', root.dataset.time);
-      } catch {}
-    };
-  });
 
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
   const layers = root.querySelectorAll('[data-d]');
