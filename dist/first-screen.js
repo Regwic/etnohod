@@ -1,6 +1,6 @@
 /* First screen adapted from the user-supplied HTML reference. */
 let firstScreenCleanup=null;
-function firstScreenHome(u){const ready=!!u?.character,progress=typeof kidProgress==='function'?kidProgress(u):{xp:0},route=ready?(u.tutorialDone?'map':'tutorial'):u?'character':'login',action=ready?'Продолжить путешествие':'Создать персонажа';return `<section class="first-screen" id="firstScreen"><div class="fs-landscape" aria-hidden="true">
+function firstScreenHome(u){const ready=!!u?.character,progress=typeof kidProgress==='function'?kidProgress(u):{xp:0},route=ready?'map':u?'character':'login',action=ready?'Продолжить путешествие':'Создать персонажа';return `<section class="first-screen" id="firstScreen"><div class="fs-landscape" aria-hidden="true">
 <svg viewBox="0 0 1280 714" preserveAspectRatio="xMidYMid slice" focusable="false">
   <defs>
     <image id="fs-valley-image" href="assets/first-valley.webp" width="1280" height="714"/>
