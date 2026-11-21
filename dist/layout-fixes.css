@@ -17,8 +17,32 @@ body .hero-studio-tools .btn>svg{width:20px;height:20px;flex:0 0 20px;aspect-rat
  body .hero-studio-tabs button{flex-direction:row;gap:8px;font-size:14px;min-height:52px}
  body .discovery-location h2{font-size:clamp(22px,6vw,27px)}
  body .hero-studio-paths button>span:nth-child(2){min-width:0}
- body .game-profile-info h2,body #heroCreatedName{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ body .game-profile-info{width:100%;min-width:0}
 }
 @media(max-width:360px){body:not([data-route=home])>.site-header .brand{font-size:16px;gap:6px}body:not([data-route=home])>.site-header .brand img{width:26px;height:26px}body:not([data-route=home])>.site-header .header-enter{font-size:12px;padding:9px 8px}body .onboard-steps li{font-size:11px}}
 /* SVG icons use their intrinsic square viewBox even inside rectangular artwork slots. */
 svg.ui-icon{height:auto!important;aspect-ratio:1;object-fit:contain}
+
+/* Names, class codes and long source links can be wider than a card. */
+body :is(.story-dialogue h2,.visit-wardrobe-preview h2,.game-profile-info h2,[data-route=class] .game-panel h2,#heroCreatedName,.game-history td,main#app [href^="https://"]) {
+  overflow-wrap:anywhere!important;
+}
+
+@media(max-width:820px) {
+  body:not([data-route=home])>.site-header {
+    padding-inline:var(--mobile-gutter);
+  }
+  body:not([data-route=home])>.site-header #nav {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    width:100%;
+    gap:3px;
+    border-radius:20px;
+  }
+  body:not([data-route=home])>.site-header #nav a {
+    display:grid;
+    place-items:center;
+    padding-inline:2px;
+    font-size:clamp(11px,3.55vw,14px);
+  }
+}

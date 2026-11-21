@@ -58,3 +58,9 @@ body[data-route=home]>.site-header{display:none}body[data-route=home] #app{max-w
 @media (prefers-reduced-motion: reduce) {
   .fs-landscape [data-d] { transform: none; }
 }
+
+.fs-nickname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
