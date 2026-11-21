@@ -78,7 +78,7 @@ function renderVisitPatterns(u, s) {
   return `<section class="orn-workshop" data-color="${ornament.color}" aria-labelledby="orn-title">
     <header class="orn-heading">
       <div><h2 id="orn-title" tabindex="-1">Мастерская узоров</h2>
-      <p>Перенеси фигуры на поле и повтори образец.</p></div>
+      <p>Перетащи фигуру к нужному месту или выбери её и коснись поля.</p></div>
       <ol class="orn-rounds" aria-label="Узоры">${visitOrnaments.map((item, i) =>
         `<li${i === state.round ? ' aria-current="step"' : ''} aria-label="${item.name}${i < state.round ? ', готов' : ''}">${i < state.round ? '✓' : i + 1}</li>`).join('')}</ol>
     </header>
@@ -163,6 +163,33 @@ function wireVisitPatterns(u, s, redraw) {
   let selected = pieces.findIndex(button => !button.disabled);
   let turn = 0, anchor = null, drag, pinned = false, animating = false;
 
+  function fits(index) {
+    const projected = visitOrnamentCells(ornament.pieces[selected], turn, index);
+    return projected.length > 0 && projected.every(i => ornament.target[i] && !occupied.has(i));
+  }
+
+  function snapTouch(x, y, exact = null) {
+    const bounds = board.getBoundingClientRect();
+    const reach = bounds.width / 8 * 1.45;
+    let nearest = null;
+    let distance = reach;
+    if (pinned && anchor !== null && fits(anchor)) {
+      const hint = cells[anchor].getBoundingClientRect();
+      if (Math.hypot(x - hint.x - hint.width / 2, y - hint.y - hint.height / 2) < reach) return anchor;
+    }
+    if (exact !== null && fits(exact)) return exact;
+    cells.forEach((cell, i) => {
+      if (!fits(i)) return;
+      const rect = cell.getBoundingClientRect();
+      const offset = Math.hypot(x - rect.x - rect.width / 2, y - rect.y - rect.height / 2);
+      if (offset < distance) {
+        nearest = i;
+        distance = offset;
+      }
+    });
+    return nearest;
+  }
+
   function preview(index) {
     anchor = index;
     const projected = index === null ? [] : visitOrnamentCells(ornament.pieces[selected], turn, index);
@@ -186,7 +213,7 @@ function wireVisitPatterns(u, s, redraw) {
   function place(index) {
     if (animating) return;
     const projected = visitOrnamentCells(ornament.pieces[selected], turn, index);
-    if (!projected.length || !projected.every(i => ornament.target[i] && !occupied.has(i))) {
+    if (!fits(index)) {
       visitGameError(u, 'patterns', 'blocked-placement');
       status.textContent = 'Фигура здесь не помещается. Попробуй повернуть её или выбери другие клетки.';
       preview(index);
@@ -234,8 +261,11 @@ function wireVisitPatterns(u, s, redraw) {
 
   board.addEventListener('pointerleave', () => { if (!pinned) preview(null); });
   cells.forEach((cell, i) => {
-    cell.onclick = () => place(i);
-    cell.onpointerenter = () => { if (!animating && !pinned) preview(i); };
+    cell.onclick = event => {
+      const index = event.pointerType === 'touch' ? snapTouch(event.clientX, event.clientY, i) : i;
+      place(index ?? i);
+    };
+    cell.onpointerenter = event => { if (event.pointerType !== 'touch' && !animating && !pinned) preview(i); };
     cell.onfocus = () => {
       cells.find(other => other !== cell && other.tabIndex === 0)?.setAttribute('tabindex', '-1');
       cell.tabIndex = 0;
@@ -276,7 +306,8 @@ function wireVisitPatterns(u, s, redraw) {
       drag.ghost.style.left = event.clientX + 'px';
       drag.ghost.style.top = event.clientY + 'px';
       const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-orn-cell]');
-      preview(target ? +target.dataset.ornCell : null);
+      const exact = target ? +target.dataset.ornCell : null;
+      preview(event.pointerType === 'touch' ? snapTouch(event.clientX, event.clientY, exact) : exact);
     };
     button.onpointerup = event => {
       if (drag?.pointer !== event.pointerId) return;
@@ -311,7 +342,7 @@ function wireVisitPatterns(u, s, redraw) {
     select(remaining.find(i => ornament.pieces[i] === hint.shape), hint.turn);
     pinned = true;
     preview(hint.anchor);
-    status.textContent = 'Поставь выделенную фигуру на подсвеченные клетки.';
+    status.textContent = 'Поставь выделенную фигуру рядом с подсветкой.';
     focusCell(hint.anchor);
     cells[hint.anchor].scrollIntoView({block: 'nearest', behavior: 'instant'});
   };

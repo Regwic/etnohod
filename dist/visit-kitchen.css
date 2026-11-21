@@ -119,7 +119,6 @@
 .vk-controls progress { width: min(7rem, 28%); }
 .vk-controls p { font-size: .875rem; font-weight: 800; }
 .vk-controls p:empty { display: none; }
-.vk-kitchen .vk-note { margin-top: .75rem; font-size: .875rem; }
 .vk-heating .vk-vessel { animation: vk-simmer .55s ease-in-out infinite alternate; }
 .vk-heating::after {
   content: ''; height: .45rem; width: 35%; background: #ffb54a; border-radius: 1rem;

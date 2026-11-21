@@ -134,7 +134,6 @@ function renderVisitCooking(u, s) {
         <p role="status" data-vk-status>${items ? `Добавлено ${progress.added.length} из ${items.length}` : ''}</p>
       </div>
     </div>
-    <p class="vk-note">Семейный вариант рецепта. Время в игре сокращено. На настоящей кухне с ножом и плитой помогают взрослые.</p>
   </section>`;
 }
 
