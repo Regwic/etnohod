@@ -46,3 +46,30 @@ body :is(.story-dialogue h2,.visit-wardrobe-preview h2,.game-profile-info h2,[da
     font-size:clamp(11px,3.55vw,14px);
   }
 }
+
+/* The marten welcomes players and points toward the mode selection. */
+body[data-route="login"] .join-story > .join-marten-helper{display:block;width:clamp(180px,22vw,260px);height:270px;max-width:100%;object-fit:contain;align-self:center;margin:0 auto 8px;filter:drop-shadow(0 12px 18px #061c2140)}
+@media(max-width:760px){body[data-route="login"] .join-story > .join-marten-helper{width:170px;height:190px;margin-bottom:0}}
+
+/* A simpler character studio with a scenic portrait. */
+body[data-route="character"] .hero-studio-grid{grid-template-columns:minmax(210px,.85fr) minmax(300px,1.2fr) minmax(260px,1fr);gap:18px;align-items:stretch}
+body[data-route="character"] .hero-studio-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-route="character"] .hero-studio-tabs button{min-height:64px;font-size:14px}
+body[data-route="character"] .hero-studio-stage{height:clamp(300px,32vw,390px);background:#b6cba0 url('assets/hero-clearing.png') center 60%/cover no-repeat}
+body[data-route="character"] #heroModel{bottom:22px;height:88%;filter:drop-shadow(0 9px 5px #233f3540)}
+body[data-route="character"] #heroModel>.game-character{height:100%}
+body[data-route="character"] .hero-studio-tools{margin-bottom:18px}
+body[data-route="character"] .hero-studio-options .hero-option{min-height:130px}
+body[data-route="character"] .hero-studio-options h3{font-size:17px}
+@media(max-width:1100px){
+ body[data-route="character"] .hero-studio-grid{grid-template-columns:minmax(220px,.85fr) minmax(300px,1.15fr)}
+ body[data-route="character"] .hero-studio-path{grid-column:1/-1}
+ body[data-route="character"] .hero-studio-stage{height:370px}
+}
+@media(max-width:760px){
+ body[data-route="character"] .hero-studio-grid{grid-template-columns:minmax(0,1fr);gap:18px}
+ body[data-route="character"] .hero-studio-path{grid-column:auto}
+ body[data-route="character"] .hero-studio-stage{height:clamp(290px,85vw,390px)}
+ body[data-route="character"] .hero-studio-preview{grid-row:1}
+ body[data-route="character"] .hero-studio-paths{grid-template-columns:1fr}
+}
