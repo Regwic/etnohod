@@ -47,10 +47,15 @@ function visitOrnamentCells(shape, turn, anchor) {
 function visitOrnamentState(s) {
   if (s.patterns?.version !== 2) {
     const finished = [0, 1].every(i => s.outfits?.[i]?.length === 3) || s.patterns?.ribbons >= 6;
-    s.patterns = { version: 2, round: finished ? visitOrnaments.length : 0, placements: [] };
+    s.patterns = { version: 2, round: finished ? visitOrnaments.length : 0, placements: [], fromRibbons: finished };
     if (finished) s.outfits = { 0: ['body', 'collar', 'hem'], 1: ['body', 'collar', 'hem'] };
   }
   return s.patterns;
+}
+
+function visitCollectedMotifs(s) {
+  if (s.patterns?.version !== 2 || !Number.isInteger(s.patterns.round)) return [];
+  return s.patterns.fromRibbons ? [] : visitOrnaments.slice(0, s.patterns.round);
 }
 
 function visitOrnamentSample(ornament) {
@@ -68,7 +73,7 @@ function renderVisitPatterns(u, s) {
   const ornament = visitOrnaments[state.round];
   if (!ornament) return `<section class="orn-workshop orn-complete">
     <h2 id="orn-title" tabindex="-1">Три узора готовы!</h2>
-    <p>Наряды к празднику собраны. Можно продолжать путешествие.</p>
+    <p>Наряды к Сабантую готовы. Собранные мотивы сохранены в Книге открытий.</p>
     <div class="orn-gallery">${visitOrnaments.map(item => `<figure>${visitOrnamentSample(item)}<figcaption>${item.name}</figcaption></figure>`).join('')}</div>
   </section>`;
 

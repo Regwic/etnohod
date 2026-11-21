@@ -1,0 +1,79 @@
+.water-panel {
+  max-width: 61rem;
+  margin: 1.25rem auto;
+  padding: clamp(.85rem, 3vw, 1.85rem);
+  border: 1px solid #caa36585;
+  border-radius: 1.25rem;
+  color: #fff0cf;
+  background: radial-gradient(ellipse at 50% 0%, #684734, #263b30 43%, #1a332b 85%);
+}
+.story-game .water-panel :is(h2,h3,p) { color: inherit; }
+.water-header h2, .festival-discovery h2 { margin: 0 0 .5rem; color: #ffe0a0; }
+.water-telling, .water-old-epic { margin: .85rem 0; padding: .65rem .8rem; border: 1px solid #d0b67875; border-radius: .65rem; }
+.water-panel summary { cursor: pointer; font-weight: 800; color: #ffe0a0; padding-block: .25rem; }
+.water-old-epic .game-panel { margin: .6rem 0; }
+.water-slots, .water-tray, .water-sequence {
+  display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .55rem;
+  list-style: none; padding: 0; margin: .7rem 0;
+}
+.water-slots li, .water-sequence li { min-width: 0; }
+.water-slots li > span {
+  display: grid; place-items: center; min-height: 4.5rem; height: 100%;
+  border: 1px dashed #d3b676; border-radius: .6rem; color: #f4d795; font-weight: 900;
+}
+.water-art {
+  display: block; width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: cover;
+  border-radius: .45rem;
+}
+.water-atlas {
+  background: #2a4a37 url('assets/ural-epic-atlas.png') no-repeat;
+  background-size: 200% 300%; background-position: var(--frame-x) var(--frame-y);
+}
+.water-panel :is(.water-slots,.water-tray) button, .festival-choices button {
+  display: grid; align-content: start; justify-items: stretch; gap: .3rem;
+  width: 100%; height: 100%; min-width: 0; margin: 0; padding: .35rem;
+  border: 1px solid #bf9d60; border-radius: .65rem;
+  background: #fff0cf; color: #273c2d;
+  font: 800 .86rem/1.22 var(--sans);
+}
+.water-panel :is(.water-slots,.water-tray) button:disabled { opacity: .62; }
+.water-panel .water-slots button:disabled { opacity: 1; background: #d6e9b8; border-color: #8da761; }
+.water-panel .water-feedback:empty { display: none; }
+.water-sequence li {
+  background: #fff0cf; border: 1px solid #d4b173; border-radius: .65rem;
+  color: #273a2e; padding: .4rem; font-size: .88rem; line-height: 1.4;
+}
+.story-game .water-sequence li p, .visit-book-page .water-sequence li p { color: #304635; line-height: 1.45; font-size: .88rem; margin: .3rem 0; }
+.water-sequence strong { display: block; margin-top: .4rem; }
+.water-panel .game-text-link { color: #ffe2a3; }
+.festival-choices { display: flex; gap: .55rem; flex-wrap: wrap; margin: .85rem 0; }
+.festival-choices button { width: auto; height: auto; min-height: 44px; align-content: center; padding: .45rem .8rem; }
+.festival-choices button[aria-pressed="true"] { background: #f4ca75; border-color: #ffdf9a; }
+.festival-response { background: #254638; border: 1px solid #c4aa7566; border-radius: .75rem; padding: .85rem; }
+.festival-dish, .festival-outfit { float: left; width: 5.5rem; height: auto; margin: 0 .8rem .4rem 0; }
+.festival-outfit svg { width: 100%; height: auto; display: block; }
+.festival-response::after { content: ''; display: block; clear: both; }
+.visit-collection-card .orn-sample { max-width: 9rem; margin: .15rem 0 .7rem; }
+@media (max-width: 580px) {
+  .water-tray, .water-sequence { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .water-slots { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+.water-campsite {
+  display: flex; align-items: end; justify-content: center; gap: clamp(.85rem,7vw,4.5rem);
+  height: clamp(7.5rem,20vw,12.5rem); margin-bottom: 1rem;
+  overflow: hidden; border-radius: .8rem; border: 1px solid #c99b6155;
+  background: radial-gradient(ellipse at 58% 93%, #eaa54f75, transparent 43%),
+    linear-gradient(#18283ccd, #26333994 60%, #1b281bd6),
+    url('assets/ural-postcard.jpg') center 58% / cover;
+}
+.water-campsite .story-human { width: auto; height: 92%; aspect-ratio: 1/2; }
+.water-fire {
+  position: relative; width: clamp(2.5rem,7vw,4.5rem); aspect-ratio: 1.2; margin-bottom: .85rem;
+  background: radial-gradient(ellipse at 48% 80%, #fff4bd 0 9%, #ffbf59 25%, #f58a47 52%, #a24227);
+  border-radius: 53% 10% 55% 52%;
+  transform: rotate(-17deg); box-shadow: 0 0 1.35rem #ffb343aa;
+}
+.water-fire::after {
+  content: ''; position: absolute; bottom: -.15rem; left: -.17rem; right: -.17rem; height: .36rem;
+  border-radius: 1rem; transform: rotate(17deg); background: #5b382b; border: 1px solid #b27344;
+}
