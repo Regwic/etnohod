@@ -103,7 +103,7 @@ function playerState(row) {
     step: row.answered,
     correct: row.correct,
     total,
-    question: next ? { prompt: next.prompt, options: next.options } : null,
+    question: next ? { prompt: next.prompt, options: next.options, story: next.story } : null,
     last: answers.at(-1) ?? null,
   };
 }

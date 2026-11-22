@@ -51,16 +51,21 @@ test('a teacher can invite two independent participants and see durable progress
   assert.equal((await request('/api/play/open', { body: { token: token.slice(0, -3) + '!!!' } })).status, 404);
 
   const open = await request('/api/play/open', { body: { token } });
-  assert.equal((await open.json()).step, 0);
+  const firstQuestion = await open.json();
+  assert.equal(firstQuestion.step, 0);
+  assert.match(firstQuestion.question.story, /«Һаумыһығыҙ!»/);
   const answer = (step, choice) => request('/api/play/answer', { body: { token, step, choice } });
   const firstAnswers = await Promise.all([answer(0, 1), answer(0, 1)]);
   assert.deepEqual(await Promise.all(firstAnswers.map(async value => (await value.json()).step)), [1, 1]);
-  assert.equal((await (await request('/api/play/open', { body: { token } })).json()).step, 1);
+  const secondQuestion = await (await request('/api/play/open', { body: { token } })).json();
+  assert.equal(secondQuestion.step, 1);
+  assert.match(secondQuestion.question.story, /«Рәхмәт!»/);
 
   const mid = (await (await request(participants, { cookie })).json()).participants.find(p => p.id === alice.id);
   assert.equal(mid.status, 'playing');
   assert.equal(mid.answered, 1);
-  await answer(1, 1);
+  const thirdQuestion = await (await answer(1, 1)).json();
+  assert.match(thirdQuestion.question.story, /«Һау бул!»/);
   const complete = await (await answer(2, 2)).json();
   assert.equal(complete.question, null);
   assert.equal(complete.correct, 2);

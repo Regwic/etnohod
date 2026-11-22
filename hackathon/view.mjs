@@ -60,6 +60,8 @@ progress{accent-color:#396e53;width:100%;height:12px;display:block}.row-progress
 .answer{text-align:left;border:1px solid #aabfb0;border-radius:10px;background:#f1f5e9;color:var(--text);min-height:44px;padding:.5rem .8rem;font-weight:700}
 .answer:hover{border-color:var(--forest);background:#e3ecd9}
 .feedback{padding:9px 12px;background:#e5eedc;color:#234c34;border-radius:9px;margin-top:10px;font-size:.94rem}
+.story-hint{margin-top:14px;padding:12px 14px;border-left:3px solid #c68a31;border-radius:8px;background:#f7edd7}
+.story-hint h3{margin:0 0 4px;font-size:1rem}
 .score{font:700 2.6rem/1 Georgia,serif;color:var(--forest)}
 @media(max-width:520px){main{margin-top:20px}.card{padding:16px}.heading{flex-wrap:wrap}.stat{padding:10px 8px}.stat span{font-size:.8rem}.create-fields{grid-template-columns:1fr}.play,.art{padding:16px}.art{min-height:124px}.btn{padding:.5rem .8rem}}
 `;
@@ -300,6 +302,14 @@ async function playGame() {
         });
         area.append(button);
       });
+    }
+    if (state.question) {
+      const story = element('aside',undefined,'story-hint');
+      const heading = element('h3','История-подсказка');
+      heading.id = 'story-hint-title';
+      story.setAttribute('aria-labelledby',heading.id);
+      story.append(heading,element('p',state.question.story));
+      pane.append(story);
     }
     if (state.last) {
       const feedback = element('p',(state.last.correct ? 'Верно! ' : 'Запомни: ') + state.last.note,'feedback');
