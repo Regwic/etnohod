@@ -18,7 +18,7 @@ const bundle = [
 
 await mkdir(resolve(destination, 'dist/server'), { recursive: true });
 await mkdir(resolve(destination, '.openai'), { recursive: true });
-await mkdir(resolve(destination, 'hackathon/migrations'), { recursive: true });
+await mkdir(resolve(destination, 'drizzle'), { recursive: true });
 await writeFile(resolve(destination, 'dist/server/index.js'), bundle);
 await copyFile(hosting, resolve(destination, '.openai/hosting.json'));
-await copyFile(new URL('hackathon/migrations/0000_hackathon.sql', root), resolve(destination, 'hackathon/migrations/0000_hackathon.sql'));
+await copyFile(new URL('hackathon/migrations/0000_hackathon.sql', root), resolve(destination, 'drizzle/0000_hackathon.sql'));
