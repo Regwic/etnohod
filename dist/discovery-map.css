@@ -1,5 +1,5 @@
 body[data-route="map"] {
-  background: #e9ddbd;
+  background: #c4ded8;
   overflow: hidden;
 }
 
@@ -93,7 +93,7 @@ body[data-route="map"] .discovery-atlas {
   isolation: isolate;
   padding: 0;
   color: var(--atlas-ink);
-  background: #e9ddbd;
+  background: #c4ded8;
   font-family: Nunito, system-ui, sans-serif;
 }
 
@@ -106,7 +106,7 @@ body[data-route="map"] .discovery-atlas {
   display: block;
   min-height: 0;
   aspect-ratio: auto;
-  background: linear-gradient(160deg, #f8efd8, #e9ddbd);
+  background: radial-gradient(ellipse at 45% 50%, #e6e8cb 0%, #c4ded8 60%, #a4c8d0 100%);
   animation: atlas-canvas-in .72s var(--atlas-ease) both;
 }
 
@@ -143,43 +143,49 @@ body[data-route="map"] #atlasMap .russia-svg {
 }
 
 .discovery-atlas .atlas-map .map-path {
-  fill: url(#atlas-land-dots);
-  stroke: #526c4f;
-  stroke-width: .75;
+  fill: var(--region-fill, #8dab75);
+  stroke: #e9edce;
+  stroke-width: 1;
 }
 
 .discovery-atlas .atlas-map .map-path:hover,
 .discovery-atlas .atlas-map .map-path.is-selected {
-  fill: #a0b989;
-  stroke: var(--atlas-ink);
-  stroke-width: 1.4;
+  fill: #6c9c71;
+  stroke: #224d39;
+  stroke-width: 2;
 }
 
 .discovery-atlas .atlas-map .map-path.is-available {
-  fill: #e9bc61;
-  stroke: #8d6231;
-  stroke-width: 1.3;
+  fill: #edc05e;
+  stroke: #9b7031;
+  stroke-width: 2;
+}
+
+.discovery-atlas .atlas-map .map-path.is-available.is-selected {
+  fill: #ffce60;
+  stroke: #775123;
 }
 
 .discovery-atlas .atlas-map .map-location .pin-core {
-  fill: var(--atlas-paper);
-  stroke: var(--atlas-ink);
+  fill: #2b4b3b;
+  stroke: #eef1d2;
+  stroke-width: 2;
 }
+
+.discovery-atlas .atlas-map .map-location .pin-icon { stroke: #fff5d6; }
 
 .discovery-atlas .atlas-map .map-location.available .pin-core {
-  fill: var(--atlas-gold);
-  stroke: var(--atlas-ink);
+  fill: #ffce60;
+  stroke: #fff6cf;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 2px 5px #98782e77);
 }
 
-.discovery-atlas .atlas-map .map-location.is-selected .pin-core,
-.discovery-atlas .atlas-map .map-location:focus-visible .pin-core {
-  stroke: #81532a;
-  stroke-width: 3;
-}
+.discovery-atlas .atlas-map .map-location.available .pin-icon { stroke: #5d4519; }
 
 .discovery-atlas .atlas-map .map-location text {
-  fill: var(--atlas-ink);
-  stroke: var(--atlas-paper);
+  fill: #183d2c;
+  stroke: #fff8df;
   stroke-width: 4px;
   font: 900 19px Nunito, system-ui, sans-serif;
 }
