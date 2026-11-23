@@ -24,25 +24,232 @@
       }).join('');
       const palette=['#a6bd85','#88a97b','#a8bd91','#c8c38a','#7ca68b','#b7ba81','#8bb494'];
       const terrain=`<g class="map-decoration" fill="none" stroke="#71866b" stroke-width="1.4" stroke-linecap="round"><path d="M560 375l11-18 11 18m-17-9l6 3 5-3M585 378l13-25 13 25m-21-15l8 4 6-4M615 375l9-14 9 14"/><path d="M515 245v23m-7-10l7-12 7 12m-14 3l7-12 7 12M533 249v20m-6-10l6-10 6 10m-12 3l6-10 6 10"/><path d="M855 470q8 6 16 0t16 0m-22 8q8 6 16 0t16 0M920 445q8-9 16 0q8-9 16 0M940 455q7-7 14 0q7-7 14 0"/></g>`;
-      container.innerHTML = `<div class="map-hover" aria-live="polite">Куда отправимся сегодня?</div><svg class="russia-svg" viewBox="0 0 1100 610" tabindex="0" role="group" aria-label="Интерактивный атлас: выберите регион или отметку маршрута. Масштаб — кнопками плюс и минус, перемещение — стрелками или перетаскиванием."><defs><pattern id="map-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#999471" stroke-width=".4" opacity=".12"/></pattern></defs><rect x="-3000" y="-2000" width="7000" height="5000" fill="url(#map-grid)"/><g class="map-regions">${data.regions.map(r=>`<path class="map-path ${r.id==='bashkortostan'?'is-available':''}" style="--region-fill:${palette[data.regions.indexOf(r)%palette.length]}" d="${r.d}" data-region="${safe(r.id)}"><title>${safe(r.name)}</title></path>`).join('')}</g>${terrain}<g class="map-pins">${pins}</g><g transform="translate(1010 95)" fill="none" stroke="#9a8c61" stroke-width="1"><circle r="27"/><path d="M0-36V36M-36 0H36M0-28L-5 0 0-5 5 0Z"/><text x="0" y="-45" fill="#81764f" stroke="none" text-anchor="middle" font-family="Georgia" font-size="12">С</text></g></svg><div class="map-toolbar" aria-label="Управление картой"><div class="map-controls"><button type="button" data-zoom="in" aria-label="Приблизить карту">+</button><button type="button" data-zoom="out" aria-label="Отдалить карту">−</button><button type="button" data-zoom="reset" aria-label="Показать всю карту">↺</button></div><select aria-label="Выбрать регион на карте"><option value="">Найти регион</option>${data.regions.slice().sort((a,b)=>a.name.localeCompare(b.name,'ru')).map(r=>`<option value="${safe(r.id)}">${safe(r.name)}</option>`).join('')}</select></div>`;
-      const svg=container.querySelector('svg'), status=container.querySelector('.map-hover');
-      let view=[0,0,1100,610], drag=null, moved=false;
-      const pointers=new Map(); let pinch=null;
-      const apply=()=>{view[0]=Math.min(1050,Math.max(-view[2]+50,view[0]));view[1]=Math.min(560,Math.max(-view[3]+50,view[1]));svg.setAttribute('viewBox',view.join(' '));};
-      const zoom=(factor,cx=view[0]+view[2]/2,cy=view[1]+view[3]/2)=>{const w=Math.min(1100,Math.max(183,view[2]*factor)),ratio=w/view[2];view=[cx-(cx-view[0])*ratio,cy-(cy-view[1])*ratio,w,w*610/1100];apply();};
-      const choose=(id,isPin=false)=>{const p=(isPin?data.locations:data.regions).find(r=>r.id===id);if(!p)return;container.querySelectorAll('.is-selected').forEach(el=>{el.classList.remove('is-selected');if(el.hasAttribute('aria-pressed'))el.setAttribute('aria-pressed','false')});container.querySelector(`[${isPin?'data-location':'data-region'}="${id}"]`)?.classList.add('is-selected');if(isPin)container.querySelector(`[data-location="${id}"]`)?.setAttribute('aria-pressed','true');status.textContent=p.name+(p.available||id==='bashkortostan'?' · маршрут открыт':' · маршрут готовится');const matchingRegion=data.regions.find(r=>r.id===p.id||r.name===p.name||r.name===({altai:'Республика Алтай',kamchatka:'Камчатский край'})[p.id]);container.querySelector('select').value=matchingRegion?.id||'';onSelect(p.id,p.name,!!p.available||id==='bashkortostan');};
-      container.querySelectorAll('[data-zoom]').forEach(b=>b.onclick=()=>{if(b.dataset.zoom==='reset'){view=[0,0,1100,610];apply();}else zoom(b.dataset.zoom==='in'?.75:1.333333)});
-      container.querySelector('select').onchange=e=>{if(e.target.value)choose(e.target.value)};
-      svg.addEventListener('click',e=>{if(moved){moved=false;return}const pin=e.target.closest('[data-location]'),reg=e.target.closest('[data-region]');if(pin)choose(pin.dataset.location,true);else if(reg)choose(reg.dataset.region)});
-      svg.addEventListener('pointerover',e=>{const el=e.target.closest('[data-location],[data-region]');if(!el)return;const p=(el.dataset.location?data.locations:data.regions).find(p=>p.id===(el.dataset.location||el.dataset.region));if(p)status.textContent=p.name});
-      svg.addEventListener('keydown',e=>{const p=e.target.closest('[data-location]');if(p&&(e.key==='Enter'||e.key===' ')){e.preventDefault();choose(p.dataset.location,true);return}if(['+','=','-','0','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='+'||e.key==='=')zoom(.75);else if(e.key==='-')zoom(1.333333);else if(e.key==='0'){view=[0,0,1100,610];apply()}else{const amount=view[2]*.08;if(e.key==='ArrowLeft')view[0]-=amount;if(e.key==='ArrowRight')view[0]+=amount;if(e.key==='ArrowUp')view[1]-=amount;if(e.key==='ArrowDown')view[1]+=amount;apply()}}});
-      const toPoint=(x,y)=>{const p=svg.createSVGPoint();p.x=x;p.y=y;return p.matrixTransform(svg.getScreenCTM().inverse())};
-      svg.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();const p=toPoint(e.clientX,e.clientY);zoom(e.deltaY>0?1.12:.89,p.x,p.y)},{passive:false});
-      svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;pointers.set(e.pointerId,[e.clientX,e.clientY]);moved=false;if(pointers.size===1)drag={x:e.clientX,y:e.clientY,v:view.slice()};else if(pointers.size===2){const [a,b]=[...pointers.values()];pinch={distance:Math.hypot(a[0]-b[0],a[1]-b[1])};drag=null}});
-      svg.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2&&pinch){const [a,b]=[...pointers.values()],distance=Math.hypot(a[0]-b[0],a[1]-b[1]);if(distance>0){const p=toPoint((a[0]+b[0])/2,(a[1]+b[1])/2);zoom(pinch.distance/distance,p.x,p.y);pinch.distance=distance;moved=true}return}if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5){moved=true;if(!svg.hasPointerCapture(e.pointerId))svg.setPointerCapture(e.pointerId);}const rect=svg.getBoundingClientRect(),ratio=Math.max(drag.v[2]/rect.width,drag.v[3]/rect.height);view=[drag.v[0]-dx*ratio,drag.v[1]-dy*ratio,drag.v[2],drag.v[3]];apply()});
-      const stop=e=>{pointers.delete(e.pointerId);drag=null;pinch=null;if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId)};
-      svg.addEventListener('pointerup',stop);svg.addEventListener('pointercancel',stop);
-      return {reset(){view=[0,0,1100,610];apply()},select:choose};
+      container.innerHTML = `<div class="map-hover" aria-live="polite"></div><svg class="russia-svg" viewBox="0 0 1100 610" preserveAspectRatio="xMidYMid meet" tabindex="0" role="group" aria-label="Интерактивный атлас: выберите регион или отметку маршрута. Масштаб — кнопками плюс и минус, перемещение — стрелками или перетаскиванием."><defs><pattern id="map-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#999471" stroke-width=".4" opacity=".12"/></pattern></defs><rect x="-3000" y="-2000" width="7000" height="5000" fill="url(#map-grid)"/><g class="map-regions">${data.regions.map(r=>`<path class="map-path ${r.id==='bashkortostan'?'is-available':''}" style="--region-fill:${palette[data.regions.indexOf(r)%palette.length]}" d="${r.d}" data-region="${safe(r.id)}"><title>${safe(r.name)}</title></path>`).join('')}</g>${terrain}<g class="map-pins">${pins}</g><g transform="translate(1010 95)" fill="none" stroke="#9a8c61" stroke-width="1"><circle r="27"/><path d="M0-36V36M-36 0H36M0-28L-5 0 0-5 5 0Z"/><text x="0" y="-45" fill="#81764f" stroke="none" text-anchor="middle" font-family="Georgia" font-size="12">С</text></g></svg>`;
+      const svg = container.querySelector('svg');
+      const status = container.querySelector('.map-hover');
+      const motion = matchMedia('(prefers-reduced-motion: reduce)');
+      const bounds = { width: 1100, height: 610 };
+      const names = {altai:'Республика Алтай',kamchatka:'Камчатский край'};
+      const controls = container.closest('.discovery-atlas');
+      const select = controls.querySelector('[data-atlas-select]');
+      select.insertAdjacentHTML('beforeend', data.regions.slice().sort((a,b) => a.name.localeCompare(b.name,'ru'))
+        .map(region => `<option value="${safe(region.id)}">${safe(region.name)}</option>`).join(''));
+
+      const pointers = new Map();
+      const viewport = { width: svg.clientWidth || 1, height: svg.clientHeight || 1 };
+      const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+      const fit = () => Math.min((viewport.width - 24) / bounds.width, (viewport.height - 100) / bounds.height);
+      const mobile = () => viewport.width <= 760;
+      const overview = () => ({ x: 550, y: 280, scale: Math.max(.1, fit()) });
+      let camera = mobile() ? {x:300,y:295,scale:Math.max(fit(),viewport.width / 610)} : overview();
+      let target = {...camera};
+      let frame = 0;
+      let animation;
+      let moved = false;
+      let start = null;
+      let selected = null;
+      let touched = false;
+
+      function paint() {
+        const width = viewport.width / camera.scale;
+        const height = viewport.height / camera.scale;
+        svg.setAttribute('viewBox', `${camera.x - width / 2} ${camera.y - height / 2} ${width} ${height}`);
+      }
+
+      function animate(now) {
+        frame = 0;
+        if (!svg.isConnected || !animation) return;
+        const {from, time, duration} = animation;
+        const t = clamp((now - time) / duration, 0, 1);
+        const phase = 1 - (1 - t) ** 4;
+        camera = {
+          x: from.x + (target.x - from.x) * phase,
+          y: from.y + (target.y - from.y) * phase,
+          scale: from.scale * (target.scale / from.scale) ** phase,
+        };
+        paint();
+        if (t < 1) frame = requestAnimationFrame(animate);
+        else animation = null;
+      }
+
+      function move(next, duration = 0) {
+        target = {
+          x: clamp(next.x, 24, bounds.width - 24),
+          y: clamp(next.y, 20, bounds.height - 20),
+          scale: clamp(next.scale, Math.max(.08, fit() * .78), Math.max(2.2, fit() * 5.4)),
+        };
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0;
+        if (!duration || motion.matches) {
+          animation = null;
+          camera = {...target};
+          paint();
+          return;
+        }
+        animation = {from:{...camera}, time:performance.now(), duration};
+        frame = requestAnimationFrame(animate);
+      }
+
+      function zoom(factor, point = {x:viewport.width / 2,y:viewport.height / 2}, duration = 320) {
+        touched = true;
+        const previous = duration ? target : camera;
+        const scale = clamp(previous.scale * factor, Math.max(.08, fit() * .78), Math.max(2.2, fit() * 5.4));
+        const dx = point.x - viewport.width / 2;
+        const dy = point.y - viewport.height / 2;
+        move({x:previous.x + dx / previous.scale - dx / scale, y:previous.y + dy / previous.scale - dy / scale, scale}, duration);
+      }
+
+      function mark(id, isPin) {
+        container.querySelectorAll('.is-selected').forEach(element => {
+          element.classList.remove('is-selected');
+          if (element.hasAttribute('aria-pressed')) element.setAttribute('aria-pressed', 'false');
+        });
+        if (!id) return;
+        const element = container.querySelector(`[${isPin ? 'data-location' : 'data-region'}="${id}"]`);
+        element?.classList.add('is-selected');
+        if (isPin) element?.setAttribute('aria-pressed', 'true');
+      }
+
+      function focusRegion(point) {
+        const scale = Math.max(fit() * 2.05, mobile() ? 1.12 : .25);
+        const x = point.x + viewport.width * (mobile() ? 0 : .12) / scale;
+        const y = point.y + viewport.height * (mobile() ? .16 : .025) / scale;
+        move({x,y,scale}, 760);
+      }
+
+      function choose(id, isPin = false) {
+        const item = (isPin ? data.locations : data.regions).find(region => region.id === id);
+        if (!item) return;
+        const route = isPin ? item : data.locations.find(location =>
+          location.id === id || location.name === item.name || names[location.id] === item.name
+        );
+        const region = isPin ? data.regions.find(candidate =>
+          candidate.id === id || candidate.name === item.name || candidate.name === names[id]
+        ) : item;
+        const path = svg.querySelector(`[data-region="${region?.id}"]`);
+        const box = path?.getBBox();
+        selected = route || (box ? {x:box.x + box.width / 2,y:box.y + box.height / 2} : null);
+        mark(route?.id || item.id, !!route);
+        select.value = region?.id || '';
+        const available = !!route?.available || id === 'bashkortostan';
+        status.textContent = `${route?.name || item.name} · ${available ? 'маршрут открыт' : 'маршрут готовится'}`;
+        touched = true;
+        onSelect(route?.id || item.id, route?.name || item.name, available);
+        if (selected) focusRegion(selected);
+      }
+
+      const clear = () => {
+        mark();
+        selected = null;
+        select.value = '';
+        status.textContent = '';
+      };
+      const reset = () => {
+        clear();
+        touched = true;
+        move(overview(), 620);
+      };
+
+      controls.querySelectorAll('[data-zoom]').forEach(button => {
+        button.addEventListener('click', () => {
+          if (button.dataset.zoom === 'reset') {
+            reset();
+            controls.dispatchEvent(new Event('atlasreset'));
+          } else zoom(button.dataset.zoom === 'in' ? 1.3 : 1 / 1.3);
+        });
+      });
+      select.addEventListener('change', event => { if (event.target.value) choose(event.target.value); });
+      svg.addEventListener('click', event => {
+        if (moved) { moved = false; return; }
+        const pin = event.target.closest('[data-location]');
+        const region = event.target.closest('[data-region]');
+        if (pin) choose(pin.dataset.location, true);
+        else if (region) choose(region.dataset.region);
+      });
+      svg.addEventListener('keydown', event => {
+        const pin = event.target.closest('[data-location]');
+        if (pin && ['Enter',' '].includes(event.key)) {
+          event.preventDefault();
+          choose(pin.dataset.location, true);
+          return;
+        }
+        const direction = {ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[event.key];
+        if (!direction && !['+','=','-','0'].includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === '0') {
+          reset();
+          controls.dispatchEvent(new Event('atlasreset'));
+        } else if (direction) {
+          touched = true;
+          move({x:target.x + direction[0] * 85 / target.scale,y:target.y + direction[1] * 85 / target.scale,scale:target.scale}, 260);
+        } else zoom(event.key === '-' ? 1 / 1.3 : 1.3);
+      });
+      svg.addEventListener('wheel', event => {
+        event.preventDefault();
+        touched = true;
+        const rect = svg.getBoundingClientRect();
+        const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.height : 1);
+        zoom(Math.exp(-clamp(delta,-120,120) * .0025), {x:event.clientX - rect.left,y:event.clientY - rect.top}, 235);
+      }, {passive:false});
+      svg.addEventListener('pointerdown', event => {
+        if (event.button !== 0) return;
+        if (!pointers.size) {
+          moved = false;
+          start = {x:event.clientX,y:event.clientY};
+        }
+        if (pointers.size >= 2) return;
+        pointers.set(event.pointerId, {x:event.clientX,y:event.clientY});
+      });
+      svg.addEventListener('pointermove', event => {
+        const previous = pointers.get(event.pointerId);
+        if (!previous) return;
+        const next = {x:event.clientX,y:event.clientY};
+        if (pointers.size === 2) {
+          const other = [...pointers.entries()].find(([id]) => id !== event.pointerId)[1];
+          const oldDistance = Math.hypot(previous.x - other.x, previous.y - other.y);
+          const newDistance = Math.hypot(next.x - other.x, next.y - other.y);
+          if (oldDistance > 0 && newDistance > 0) {
+            const rect = svg.getBoundingClientRect();
+            const mid = {x:(previous.x + other.x) / 2 - rect.left,y:(previous.y + other.y) / 2 - rect.top};
+            zoom(newDistance / oldDistance, mid, 0);
+            move({x:camera.x - (next.x - previous.x) / (2 * camera.scale),y:camera.y - (next.y - previous.y) / (2 * camera.scale),scale:camera.scale});
+          }
+          moved = true;
+        } else if (moved || Math.hypot(next.x - start.x, next.y - start.y) > 5) {
+          move({x:camera.x - (next.x - previous.x) / camera.scale,y:camera.y - (next.y - previous.y) / camera.scale,scale:camera.scale});
+          touched = true;
+          moved = true;
+        }
+        pointers.set(event.pointerId, next);
+        if (moved && !svg.hasPointerCapture(event.pointerId)) svg.setPointerCapture(event.pointerId);
+      });
+      function stop(event) {
+        pointers.delete(event.pointerId);
+        if (svg.hasPointerCapture(event.pointerId)) svg.releasePointerCapture(event.pointerId);
+      }
+      svg.addEventListener('pointerup', stop);
+      svg.addEventListener('pointercancel', stop);
+      svg.addEventListener('pointerleave', event => {
+        if (!svg.hasPointerCapture(event.pointerId)) stop(event);
+      });
+
+      const observer = new ResizeObserver(() => {
+        viewport.width = svg.clientWidth || 1;
+        viewport.height = svg.clientHeight || 1;
+        if (selected) focusRegion(selected);
+        else if (!touched) move(mobile() ? {x:300,y:295,scale:Math.max(fit(),viewport.width / 610)} : overview());
+        else move(camera);
+      });
+      observer.observe(svg);
+      paint();
+      return {
+        select: choose,
+        clear,
+        destroy() {
+          observer.disconnect();
+          if (frame) cancelAnimationFrame(frame);
+        },
+      };
     } catch(error) {
       if(container.isConnected)container.innerHTML='<p class="map-instructions">Карта не загрузилась. Проверьте соединение и обновите страницу.</p>';
       console.error('Atlas load failed',error);
@@ -50,10 +257,142 @@
   };
 })();
 
-/* Discovery map: shared geographic renderer, real visit progress. */
-const DISCOVERY_LOCATIONS=[['bashkortostan','Башкортостан'],['tatarstan','Татарстан'],['karelia','Карелия'],['dagestan','Дагестан'],['altai','Алтай'],['yakutia','Якутия'],['kamchatka','Камчатка'],['crimea','Крым']];
-function discoveryAtlasPage(u){return `<div class="discovery-atlas" id="discoveryAtlas"><header class="discovery-heading"><div><h1>Куда отправимся <br><em>сегодня?</em></h1><p>Выбирай место. Знакомься с людьми. Собирай свою историю.</p></div><div class="discovery-hud"><a class="discovery-player" href="#profile">${u?.character?gameCharacter(u,{gear:false}):kidIcon('compass')}<span><strong>${esc(u?.nick||'Путешественник')}</strong><small>${kidProgress(u).xp} опыта · ${u?.rewards?.includes('kurai')?1:0} значков</small></span></a></div></header><nav class="discovery-shortcuts" aria-label="Маршруты на карте">${DISCOVERY_LOCATIONS.map(([id,name])=>`<button class="map-region-shortcut ${id==='bashkortostan'?'chosen':''}" type="button" data-discovery-shortcut="${id}" aria-pressed="${id==='bashkortostan'}">${kidIcon(id==='bashkortostan'?'compass':'lock')} ${name}</button>`).join('')}</nav><section class="discovery-map-card" aria-label="Карта открытий"><div class="atlas-map" id="atlasMap"><p role="status">Разворачиваем карту…</p></div><div class="discovery-map-note"><span>${kidIcon('compass')} Золотой компас — можно отправляться</span><button type="button" data-discovery-help>${kidIcon('help')} Как двигать карту?</button></div></section><section class="discovery-location" id="locationPanel" aria-live="polite">${discoveryLocationDetails('bashkortostan','Башкортостан',true,u)}</section><div class="discovery-bottom"><section class="discovery-guide">${visitCompanionMarkup()}<div><h2>Данияр уже ждёт!</h2><p>Приготовим угощения, украсим наряды и познакомимся с семьёй. А открытия сохраним в книге.</p><a href="#book/bashkortostan">Открыть книгу Башкортостана</a></div></section><section class="discovery-collection"><span>${kidIcon('bag')}</span><div><h2>Место для воспоминаний</h2><p>${u?.rewards?.includes('kurai')?'Первый значок «Курай» уже с тобой. Открывай рюкзак и примерь подарок Данияра.':'Заверши историю — получи бүрек и значок с кураем для рюкзака.'}</p><a href="#wardrobe">Заглянуть в рюкзак</a></div></section></div><dialog class="discovery-dialog" id="discoveryHelp" aria-labelledby="discoveryHelpTitle"><button type="button" class="discovery-close" aria-label="Закрыть подсказку">×</button><h2 id="discoveryHelpTitle">Карта в твоих руках</h2><p>Нажми на компас или выбери регион в списке. Золотая отметка — открытая история, замок — глава, которую мы готовим.</p><p>Приближай карту кнопкой +. Двигай её мышью или пальцем. На телефоне можно менять масштаб двумя пальцами.</p><p>С клавиатуры: стрелки перемещают карту, + и − меняют масштаб, 0 возвращает общий вид. Выбрать отметку — Enter.</p><button class="kid-primary" type="button" data-discovery-close>Понятно!</button></dialog></div>`}
-function discoveryLocationDetails(id,name,available,u){const s=u?.story||{},done=!!s.completed,total=STORY_ORDER.length,n=storyStepIndex(s);return `<div class="discovery-postcard">${available?'<img src="assets/ural-postcard.jpg" alt="Иллюстрированная долина реки на Южном Урале">':`<div class="discovery-coming-art">${kidIcon('lock')}<span>Новая история впереди</span></div>`}</div><div class="discovery-location-copy"><h2>${esc(name)}</h2><p>${available?'Данияр приглашает помочь семье подготовиться к Сабантую. Готовим чак-чак, собираем наряды, узнаём первые башкирские слова.':'Мы собираем материалы и истории для этой главы. А первая встреча уже ждёт тебя в Башкортостане.'}</p><div class="discovery-facts">${available?`<span>${kidIcon('book')} ${total} сцен</span><span>${kidIcon('compass')} Около 20 минут</span><span>${kidIcon('bag')} Бүрек и курай</span>`:`<span>${kidIcon('lock')} Глава готовится</span>`}</div></div><div class="discovery-location-action">${available?`<div class="discovery-progress-label"><span>${done?'История пройдена!':'Текущая остановка'}</span><strong>${done?total:n+1} / ${total}</strong></div><div class="discovery-progress" aria-label="${done?'История пройдена: '+total+' сцен':'Текущая остановка '+(n+1)+' из '+total}">${Array.from({length:total},(_,i)=>`<i class="${done?'done':i===n?'current':''}" ${!done&&i===n?'aria-current="step"':''}>${done?'✓':''}</i>`).join('')}</div><a class="kid-primary" href="#${done?'book/bashkortostan':n?'story':'region'}">${done?'Открыть книгу':n?'Продолжить историю':'Отправиться в гости'}</a><p>${done?'Подарки сохранены в твоём рюкзаке.':'Все открытия останутся в твоей книге.'}</p>`:`<button class="kid-primary" type="button" data-discovery-shortcut="bashkortostan">Показать первый маршрут</button><p>Башкортостан открыт для путешествия.</p>`}</div>`}
-function wireDiscoveryAtlas(u){const root=document.getElementById('discoveryAtlas');if(!root)return;const panel=root.querySelector('#locationPanel'),dialog=root.querySelector('#discoveryHelp');let ready=false,controller,pendingSelection='bashkortostan';
-renderRussiaMap(root.querySelector('#atlasMap'),(id,name,available)=>{if(!root.isConnected)return;panel.innerHTML=discoveryLocationDetails(id,name,available,u);root.querySelectorAll('.map-region-shortcut').forEach(b=>{const chosen=b.dataset.discoveryShortcut===id;b.classList.toggle('chosen',chosen);b.setAttribute('aria-pressed',String(chosen))});if(ready&&innerWidth<750)panel.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})}).then(c=>{if(!root.isConnected)return;controller=c;c?.select(pendingSelection,true);ready=true});
-root.addEventListener('click',e=>{const pick=e.target.closest('[data-discovery-shortcut]');if(pick){pendingSelection=pick.dataset.discoveryShortcut;controller?.select(pendingSelection,true);}if(e.target.closest('[data-discovery-help]'))dialog.showModal();if(e.target.closest('[data-discovery-close],.discovery-close'))dialog.close()});}
+/* Discovery map and route details. */
+const DISCOVERY_LOCATIONS = [
+  ['bashkortostan', 'Башкортостан'], ['tatarstan', 'Татарстан'], ['karelia', 'Карелия'],
+  ['dagestan', 'Дагестан'], ['altai', 'Алтай'], ['yakutia', 'Якутия'],
+  ['kamchatka', 'Камчатка'], ['crimea', 'Крым'],
+];
+
+function discoveryAtlasPage(u) {
+  const progress = kidProgress(u);
+  const badges = u?.rewards?.includes('kurai') ? 1 : 0;
+  return `<div class="discovery-atlas" id="discoveryAtlas">
+    <section class="atlas-map" id="atlasMap" aria-label="Карта открытий">
+      <p class="map-instructions" role="status">Разворачиваем карту…</p>
+    </section>
+    <header class="discovery-heading">
+      <h1>Куда отправимся<br><em>сегодня?</em></h1>
+      <p>Выбери место. Знакомься с людьми. Собирай свою историю.</p>
+    </header>
+    <a class="discovery-player" href="#profile" aria-label="Мой герой">
+      ${u?.character ? gameCharacter(u, {gear:false}) : kidIcon('compass')}
+      <span><strong>${esc(u?.nick || 'Путешественник')}</strong><small>${progress.xp} опыта · ${badges} значков</small></span>
+    </a>
+    <aside class="discovery-panel" id="atlasPanel" aria-label="Выбранный маршрут" inert>
+      <button type="button" class="discovery-close" data-atlas-dismiss aria-label="Закрыть карточку">×</button>
+      <section class="discovery-location" id="locationPanel" aria-live="polite"></section>
+    </aside>
+    <div class="discovery-dock">
+      <nav class="discovery-index" aria-label="Регионы на карте">
+        ${DISCOVERY_LOCATIONS.map(([id, name]) => {
+          const available = id === 'bashkortostan';
+          return `<button type="button" class="discovery-region ${available ? 'is-open' : ''}" data-atlas-region="${id}" aria-pressed="false" aria-controls="atlasPanel">
+            ${kidIcon(available ? 'compass' : 'lock')} <span>${name}</span>
+          </button>`;
+        }).join('')}
+      </nav>
+      <div class="discovery-controls" aria-label="Управление картой">
+        <button type="button" data-zoom="in" aria-label="Приблизить карту" title="Приблизить">+</button>
+        <button type="button" data-zoom="out" aria-label="Отдалить карту" title="Отдалить">−</button>
+        <button type="button" data-zoom="reset" aria-label="Показать всю карту" title="Показать всю карту">↺</button>
+        <select data-atlas-select aria-label="Выбрать регион на карте"><option value="">Найти регион</option></select>
+        <button type="button" data-discovery-help aria-label="Как двигать карту?" title="Как двигать карту?">${kidIcon('help')}</button>
+      </div>
+    </div>
+    <dialog class="discovery-dialog" id="discoveryHelp" aria-labelledby="discoveryHelpTitle">
+      <button type="button" class="discovery-close" data-discovery-close aria-label="Закрыть подсказку">×</button>
+      <h2 id="discoveryHelpTitle">Карта в твоих руках</h2>
+      <p>Выбери отметку или регион внизу. Золотой компас отмечает открытый маршрут.</p>
+      <p>Перетаскивай карту мышью или пальцем. Для масштаба используй колесо, кнопки + и − или жест двумя пальцами.</p>
+      <p>С клавиатуры: стрелки двигают карту, + и − меняют масштаб, 0 показывает всю карту. Enter открывает выбранную отметку.</p>
+      <button class="discovery-action" type="button" data-discovery-close>Понятно!</button>
+    </dialog>
+  </div>`;
+}
+
+function discoveryLocationDetails(name, available, u) {
+  const story = u?.story || {};
+  const done = !!story.completed;
+  const total = STORY_ORDER.length;
+  const step = storyStepIndex(story);
+  const current = done ? total : step + 1;
+  const route = done ? 'book/bashkortostan' : step ? 'story' : 'region';
+  const action = done ? 'Открыть книгу' : step ? 'Продолжить историю' : 'Отправиться в гости';
+
+  return `<div class="discovery-location-status ${available ? 'is-open' : ''}">
+    ${kidIcon(available ? 'compass' : 'lock')} ${available ? 'Маршрут открыт' : 'Маршрут готовится'}
+  </div>
+  <h2>${esc(name)}</h2>
+  <p>${available
+    ? 'Данияр приглашает помочь семье подготовиться к Сабантую. Готовим чак-чак, собираем наряды и узнаём первые башкирские слова.'
+    : 'Этот маршрут ещё готовится. Первое путешествие уже ждёт тебя в Башкортостане.'}</p>
+  ${available ? `<div class="discovery-facts">
+      <span>${kidIcon('book')} ${total} сцен</span>
+      <span>${kidIcon('compass')} Около 20 минут</span>
+    </div>
+    <div class="discovery-progress-label">
+      <span>${done ? 'История пройдена' : 'Текущая остановка'}</span><strong>${current} / ${total}</strong>
+    </div>
+    <progress class="discovery-progress" max="${total}" value="${current}" aria-label="Прогресс маршрута"></progress>
+    <a class="discovery-action" href="#${route}">${action}</a>`
+    : '<button class="discovery-action" type="button" data-atlas-region="bashkortostan">Показать открытый маршрут</button>'}`;
+}
+
+function wireDiscoveryAtlas(u) {
+  const root = document.getElementById('discoveryAtlas');
+  const panel = root.querySelector('#atlasPanel');
+  const details = root.querySelector('#locationPanel');
+  const dialog = root.querySelector('#discoveryHelp');
+  const regionButtons = [...root.querySelectorAll('.discovery-region')];
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let controller;
+  let pendingSelection;
+  let previousFocus;
+
+  function dismiss() {
+    if (panel.inert) return;
+    if (panel.contains(document.activeElement)) {
+      (previousFocus?.isConnected ? previousFocus : root.querySelector('.russia-svg'))?.focus({preventScroll:true});
+    }
+    panel.inert = true;
+    root.classList.remove('has-selection');
+    controller?.clear();
+    for (const button of regionButtons) button.setAttribute('aria-pressed', 'false');
+  }
+
+  renderRussiaMap(root.querySelector('#atlasMap'), (id, name, available) => {
+    if (!root.isConnected) return;
+    if (!panel.contains(document.activeElement) && document.activeElement !== document.body) previousFocus = document.activeElement;
+    const focusFallback = details.contains(document.activeElement);
+    details.innerHTML = discoveryLocationDetails(name, available, u);
+    panel.inert = false;
+    root.classList.add('has-selection');
+    if (focusFallback) panel.querySelector('[data-atlas-dismiss]').focus({preventScroll:true});
+    if (!motion.matches) details.animate([{opacity:.45, transform:'translateY(9px)'},{opacity:1,transform:'translateY(0)'}],
+      {duration:380,easing:'cubic-bezier(.2,.75,.25,1)'});
+    for (const button of regionButtons) {
+      button.setAttribute('aria-pressed',String(button.dataset.atlasRegion === id));
+    }
+  }).then(map => {
+    if (!root.isConnected) { map?.destroy(); return; }
+    controller = map;
+    if (pendingSelection) controller?.select(pendingSelection,true);
+  });
+
+  root.addEventListener('atlasreset', dismiss);
+  root.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !dialog.open) dismiss();
+  });
+  root.addEventListener('click', event => {
+    const region = event.target.closest('[data-atlas-region]');
+    if (region) {
+      pendingSelection = region.dataset.atlasRegion;
+      controller?.select(pendingSelection,true);
+    }
+    if (event.target.closest('[data-atlas-dismiss]')) dismiss();
+    if (event.target.closest('[data-discovery-help]')) dialog.showModal();
+    if (event.target.closest('[data-discovery-close]')) dialog.close();
+  });
+  return () => controller?.destroy();
+}

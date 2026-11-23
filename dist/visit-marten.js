@@ -1,6 +1,6 @@
 const martenHints = {
-  0: 'Нажми «Отправиться в Башкортостан», чтобы начать путешествие.',
-  1: 'Посмотри на карту Башкортостана и прочитай карточку. Затем нажми «Продолжить».',
+  0: 'Прочитай приглашение Данияра и нажми «Продолжить».',
+  1: 'Прочитай, чем предстоит помочь семье Данияра. Когда будешь готов, зайди на кухню.',
   2: 'Выбери продукт на карточке или перетащи его на рабочую поверхность. Если видишь кнопку действия, нажми её.',
   3: 'Сравни поле с образцом. Нажми «Подсказать ход», чтобы увидеть, куда поставить одну из фигур.',
   4: 'Выбери одну фразу и послушай запись. Под карточкой можно выбрать перевод.',
@@ -43,7 +43,7 @@ function openMarten(mode) {
     document.body.append(dialog);
   }
   if (dialog.open) return;
-  const story = document.querySelector('#storyGame');
+  const story = document.querySelector('[data-marten-stage]');
   const stage = story ? Number(story.dataset.martenStage) : null;
   const taskSelectors = { 2: '#vk-step', 3: '.orn-reference h3', 4: '.visit-phrase h3', 5: '[data-marten-task]', 6: '#water-title', 8: '#room-title' };
   const currentHeading = taskSelectors[stage] ? story.querySelector(taskSelectors[stage]) : null;

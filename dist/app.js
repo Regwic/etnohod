@@ -25,20 +25,40 @@ function resetCurrentCharacter(){
  save();
  location.hash='login';
 }
-function render(){if(typeof backgroundVideoCleanup==='function'){backgroundVideoCleanup();backgroundVideoCleanup=null;}if(typeof visitFlushTime==='function')visitFlushTime();if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();const [route='home',arg,section]=(location.hash.slice(1)||'home').split('/'),u=user();
+let discoveryAtlasCleanup;
+function render(){
+const [route='home',arg,section]=(location.hash.slice(1)||'home').split('/'),u=user();
+if(u?.character && route==='story' && isRegionIntro(u)){
+  history.replaceState(null,'','#region/intro');
+  return render();
+}
+if(u?.character && route==='region' && arg==='intro' && !isRegionIntro(u)){
+  history.replaceState(null,'','#story');
+  return render();
+}
+if(u?.character && route==='region' && $('#regionScreen')){
+  showRegionIntro(u,arg==='intro');
+  return;
+}
+if(discoveryAtlasCleanup){discoveryAtlasCleanup();discoveryAtlasCleanup=null;}
+if(typeof backgroundVideoCleanup==='function'){backgroundVideoCleanup();backgroundVideoCleanup=null;}
+if(typeof visitFlushTime==='function')visitFlushTime();
+if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();
 if(['map','region','story','lesson','quiz','result','profile','book','wardrobe'].includes(route)){if(!u){location.hash='home';return}if(!u.character){location.hash='character';return}}
 if(route==='home'){layout('Живой атлас культур',firstScreenHome(u));wireFirstScreen()}
 else if(route==='login')visitLoginPage(arg==='return');
 else if(route==='book'){layout('Твоя книга регионов',visitBookPage(u,arg,section));wireVisitBook(u)}
 else if(route==='wardrobe'){layout('Гардероб и рюкзак',visitWardrobePage(u));wireVisitWardrobe(u)}
 else if(route==='character'){if(arg==='edit'&&u){pendingJoin=null;sessionStorage.removeItem('ethnohod-pending-join');creatorState=null}renderCharacterStudio();}
-else if(route==='map'){layout('Карта открытий',discoveryAtlasPage(u));wireDiscoveryAtlas(u)}
+else if(route==='map'){layout('Карта открытий',discoveryAtlasPage(u));discoveryAtlasCleanup=wireDiscoveryAtlas(u)}
 else if(route==='story'){layout('Праздник с Данияром',storyPage(u));wireStoryGame(u)}
 else if(route==='region'){
   if(!requireUser())return;
   layout('Башкортостан',regionPage(u));
   wireVisitBook(u,true);
   backgroundVideoCleanup=wireLoopingBackground($('#regionVideo'),$('.region-video-toggle'));
+  wireRegionPage(u);
+  if(arg==='intro')showRegionIntro(u,true);
 }
 else if(route==='lesson'){if(!requireUser())return;let i=Number(arg),l=lessons[i];if(!l){location.hash='region';return}layout(l.title,gameLessonPage(l,i,u));document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{let ok=+b.dataset.a===l.correct;$('#feedback').textContent=(ok?'Верно! ':'Попробуй ещё. ')+l.why;if(ok){if(!u.completed.includes(i))u.completed.push(i);save();document.querySelectorAll('[data-a]').forEach(x=>x.disabled=true);$('#next').innerHTML=link(i<4?'lesson/'+(i+1):'region',i<4?'Следующая остановка':'Вернуться к маршруту')}})}
 else if(route==='quiz'){if(!requireUser())return;if(u.completed.length<5){location.hash='region';return}let qi=0,answers=[];layout('Итоговое испытание','<div class="card" id="quiz"></div>');function draw(){let l=lessons[qi];$('#quiz').innerHTML=`<h2>${l.question}</h2><p class="quiz-count">Вопрос ${qi+1} из 5</p>${l.options.map((o,j)=>`<button class="answer" data-q="${j}">${o}</button>`).join('')}`;document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{answers.push(+b.dataset.q);if(++qi<5)draw();else{u.attempts.push({date:new Date().toISOString(),answers,score:answers.filter((a,i)=>a===lessons[i].correct).length});save();location.hash='result'}})}draw()}
@@ -50,4 +70,4 @@ else if(route==='guide'){layout('Твой спутник',visitGuidePage());wire
 else if(route==='sources')layout('Материалы и источники',`<p>Маршрут знакомит с отдельными примерами культуры Башкортостана. Он не охватывает всё многообразие республики и не заменяет учебник.</p><div class="card"><h2>Где читать дальше</h2><p>${sources}</p><p>В энциклопедиях ищи статьи «Башкортостан», «Курай», «Урал-батыр», «Сабантуй» и «Бортничество».</p></div><p class="map-credit">Географические контуры: <a href="https://github.com/freOn1131/RuGeo" target="_blank" rel="noopener">RuGeo</a>. Проекция Альберса; контуры упрощены для интерактивного атласа.</p><h2>Содержание маршрута</h2>${lessons.map(l=>`<article class="card"><h3>${l.icon} ${l.title}</h3><p>${l.text}</p></article>`).join('')}<p class="notice">Перед использованием в школьной программе нужны редакционная проверка, точные ссылки на статьи и согласование с педагогом.</p>`);
 else if(route==='about')layout('О проекте',`<p>Этноход — учебное путешествие по культурам народов России. Его задача — поддержать интерес к культурному многообразию через короткие истории, задания и обсуждение с учителем.</p><div class="card"><h2>Что работает сейчас</h2><p>Вход по коду, профили учеников, пять учебных тем, проверка ответов, итоговое испытание, награда, создание классов, таблица результатов и экспорт.</p><h2>Как хранятся данные</h2><p>Данные находятся в localStorage этого браузера. Очистка данных сайта удалит их. Это прототип без серверной авторизации и синхронизации устройств. Не вводи реальные персональные данные.</p><h2>Дальнейшее развитие</h2><p>Сервер и база данных, защищённый кабинет учителя, редакционная проверка содержания, новые регионы и проводник с ответами по проверенным источникам.</p></div>`);
 else{layout('Страница не найдена',link('home','На главную'))}
-document.title=(route==='home'?'Этноход — живой атлас культур':($('#app h1')?.textContent||'Этноход')+' · Этноход');if(document.activeElement?.tagName!=='INPUT')$('#app').focus({preventScroll:true});window.scrollTo({top:0,left:0,behavior:"instant"})}window.addEventListener('hashchange',render);render();
+document.title=(route==='home'?'Этноход — живой атлас культур':($('#regionIntroTitle')?.textContent||$('#app h1')?.textContent||'Этноход')+' · Этноход');if(document.activeElement?.tagName!=='INPUT'&&!$('#regionIntroTitle'))$('#app').focus({preventScroll:true});window.scrollTo({top:0,left:0,behavior:"instant"})}window.addEventListener('hashchange',render);render();
