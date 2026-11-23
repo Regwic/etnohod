@@ -627,13 +627,15 @@ body[data-route="map"] .discovery-location .discovery-progress {
   .discovery-panel {
     inset: auto var(--atlas-gutter) calc(var(--atlas-bottom) + 130px);
     width: auto;
-    max-height: 40dvh;
+    max-height: min(46dvh, calc(100dvh - var(--atlas-bottom) - 210px));
     padding: 15px 17px;
     transform: translateY(20px) scale(.97);
   }
 
   .discovery-atlas.has-selection .discovery-panel { transform: none; }
+  body[data-route="map"] .discovery-location { gap: 9px; }
   body[data-route="map"] .discovery-location h2 { font-size: 21px; }
+  .discovery-location p { font-size: 14px; }
   .discovery-dialog { padding: 18px; }
 }
 
