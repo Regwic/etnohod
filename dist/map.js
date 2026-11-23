@@ -24,13 +24,15 @@
       }).join('');
       const palette=['#a6bd85','#88a97b','#a8bd91','#c8c38a','#7ca68b','#b7ba81','#8bb494'];
       const terrain=`<g class="map-decoration" fill="none" stroke="#71866b" stroke-width="1.4" stroke-linecap="round"><path d="M560 375l11-18 11 18m-17-9l6 3 5-3M585 378l13-25 13 25m-21-15l8 4 6-4M615 375l9-14 9 14"/><path d="M515 245v23m-7-10l7-12 7 12m-14 3l7-12 7 12M533 249v20m-6-10l6-10 6 10m-12 3l6-10 6 10"/><path d="M855 470q8 6 16 0t16 0m-22 8q8 6 16 0t16 0M920 445q8-9 16 0q8-9 16 0M940 455q7-7 14 0q7-7 14 0"/></g>`;
-      container.innerHTML = `<div class="map-hover" aria-live="polite">Куда отправимся сегодня?</div><svg class="russia-svg" viewBox="0 0 1100 610" tabindex="0" role="group" aria-label="Интерактивный атлас: выберите регион или отметку маршрута. Масштаб — кнопками плюс и минус, перемещение — стрелками или перетаскиванием."><defs><pattern id="map-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#999471" stroke-width=".4" opacity=".12"/></pattern></defs><rect x="-3000" y="-2000" width="7000" height="5000" fill="url(#map-grid)"/><g class="map-regions">${data.regions.map(r=>`<path class="map-path ${r.id==='bashkortostan'?'is-available':''}" style="--region-fill:${palette[data.regions.indexOf(r)%palette.length]}" d="${r.d}" data-region="${safe(r.id)}"><title>${safe(r.name)}</title></path>`).join('')}</g>${terrain}<g class="map-pins">${pins}</g><g transform="translate(1010 95)" fill="none" stroke="#9a8c61" stroke-width="1"><circle r="27"/><path d="M0-36V36M-36 0H36M0-28L-5 0 0-5 5 0Z"/><text x="0" y="-45" fill="#81764f" stroke="none" text-anchor="middle" font-family="Georgia" font-size="12">С</text></g></svg><div class="map-toolbar" aria-label="Управление картой"><div class="map-controls"><button type="button" data-zoom="in" aria-label="Приблизить карту">+</button><button type="button" data-zoom="out" aria-label="Отдалить карту">−</button><button type="button" data-zoom="reset" aria-label="Показать всю карту">↺</button></div><select aria-label="Выбрать регион на карте"><option value="">Найти регион</option>${data.regions.slice().sort((a,b)=>a.name.localeCompare(b.name,'ru')).map(r=>`<option value="${safe(r.id)}">${safe(r.name)}</option>`).join('')}</select></div>`;
+      container.innerHTML = `<div class="map-hover" aria-live="polite">Куда отправимся сегодня?</div><svg class="russia-svg" viewBox="0 0 1100 610" tabindex="0" role="group" aria-label="Интерактивный атлас: выберите регион или отметку маршрута. Масштаб — кнопками плюс и минус, перемещение — стрелками или перетаскиванием."><defs><pattern id="atlas-land-dots" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#dce6cf"/><circle cx="4" cy="4" r="1.75" fill="#42664e"/></pattern><pattern id="map-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#999471" stroke-width=".4" opacity=".12"/></pattern></defs><rect x="-3000" y="-2000" width="7000" height="5000" fill="url(#map-grid)"/><g class="map-regions">${data.regions.map(r=>`<path class="map-path ${r.id==='bashkortostan'?'is-available':''}" style="--region-fill:${palette[data.regions.indexOf(r)%palette.length]}" d="${r.d}" data-region="${safe(r.id)}"><title>${safe(r.name)}</title></path>`).join('')}</g>${terrain}<g class="map-pins">${pins}</g><g transform="translate(1010 95)" fill="none" stroke="#9a8c61" stroke-width="1"><circle r="27"/><path d="M0-36V36M-36 0H36M0-28L-5 0 0-5 5 0Z"/><text x="0" y="-45" fill="#81764f" stroke="none" text-anchor="middle" font-family="Georgia" font-size="12">С</text></g></svg><div class="map-toolbar" aria-label="Управление картой"><div class="map-controls"><button type="button" data-zoom="in" aria-label="Приблизить карту">+</button><button type="button" data-zoom="out" aria-label="Отдалить карту">−</button><button type="button" data-zoom="reset" aria-label="Показать всю карту">↺</button></div><select aria-label="Выбрать регион на карте"><option value="">Найти регион</option>${data.regions.slice().sort((a,b)=>a.name.localeCompare(b.name,'ru')).map(r=>`<option value="${safe(r.id)}">${safe(r.name)}</option>`).join('')}</select></div>`;
       const svg=container.querySelector('svg'), status=container.querySelector('.map-hover');
       let view=[0,0,1100,610], drag=null, moved=false;
       const pointers=new Map(); let pinch=null;
       const apply=()=>{view[0]=Math.min(1050,Math.max(-view[2]+50,view[0]));view[1]=Math.min(560,Math.max(-view[3]+50,view[1]));svg.setAttribute('viewBox',view.join(' '));};
       const zoom=(factor,cx=view[0]+view[2]/2,cy=view[1]+view[3]/2)=>{const w=Math.min(1100,Math.max(183,view[2]*factor)),ratio=w/view[2];view=[cx-(cx-view[0])*ratio,cy-(cy-view[1])*ratio,w,w*610/1100];apply();};
-      const choose=(id,isPin=false)=>{const p=(isPin?data.locations:data.regions).find(r=>r.id===id);if(!p)return;container.querySelectorAll('.is-selected').forEach(el=>{el.classList.remove('is-selected');if(el.hasAttribute('aria-pressed'))el.setAttribute('aria-pressed','false')});container.querySelector(`[${isPin?'data-location':'data-region'}="${id}"]`)?.classList.add('is-selected');if(isPin)container.querySelector(`[data-location="${id}"]`)?.setAttribute('aria-pressed','true');status.textContent=p.name+(p.available||id==='bashkortostan'?' · маршрут открыт':' · маршрут готовится');const matchingRegion=data.regions.find(r=>r.id===p.id||r.name===p.name||r.name===({altai:'Республика Алтай',kamchatka:'Камчатский край'})[p.id]);container.querySelector('select').value=matchingRegion?.id||'';onSelect(p.id,p.name,!!p.available||id==='bashkortostan');};
+      const choose=(id,isPin=false)=>{const p=(isPin?data.locations:data.regions).find(r=>r.id===id);if(!p)return;container.querySelectorAll('.is-selected').forEach(el=>{el.classList.remove('is-selected');if(el.hasAttribute('aria-pressed'))el.setAttribute('aria-pressed','false')});container.querySelector(`[${isPin?'data-location':'data-region'}="${id}"]`)?.classList.add('is-selected');if(isPin)container.querySelector(`[data-location="${id}"]`)?.setAttribute('aria-pressed','true');status.textContent=p.name+(p.available||id==='bashkortostan'?' · маршрут открыт':' · маршрут готовится');const matchingRegion=data.regions.find(r=>r.id===p.id||r.name===p.name||r.name===({altai:'Республика Алтай',kamchatka:'Камчатский край'})[p.id]);container.querySelector('select').value=matchingRegion?.id||'';const route = !isPin && data.locations.find(location => location.name === p.name ||
+        ({altai:'Республика Алтай',kamchatka:'Камчатский край'})[location.id] === p.name);
+      onSelect(route?.id || p.id, route?.name || p.name, !!p.available || id === 'bashkortostan');};
       container.querySelectorAll('[data-zoom]').forEach(b=>b.onclick=()=>{if(b.dataset.zoom==='reset'){view=[0,0,1100,610];apply();}else zoom(b.dataset.zoom==='in'?.75:1.333333)});
       container.querySelector('select').onchange=e=>{if(e.target.value)choose(e.target.value)};
       svg.addEventListener('click',e=>{if(moved){moved=false;return}const pin=e.target.closest('[data-location]'),reg=e.target.closest('[data-region]');if(pin)choose(pin.dataset.location,true);else if(reg)choose(reg.dataset.region)});
@@ -50,10 +52,125 @@
   };
 })();
 
-/* Discovery map: shared geographic renderer, real visit progress. */
-const DISCOVERY_LOCATIONS=[['bashkortostan','Башкортостан'],['tatarstan','Татарстан'],['karelia','Карелия'],['dagestan','Дагестан'],['altai','Алтай'],['yakutia','Якутия'],['kamchatka','Камчатка'],['crimea','Крым']];
-function discoveryAtlasPage(u){return `<div class="discovery-atlas" id="discoveryAtlas"><header class="discovery-heading"><div><h1>Куда отправимся <br><em>сегодня?</em></h1><p>Выбирай место. Знакомься с людьми. Собирай свою историю.</p></div><div class="discovery-hud"><a class="discovery-player" href="#profile">${u?.character?gameCharacter(u,{gear:false}):kidIcon('compass')}<span><strong>${esc(u?.nick||'Путешественник')}</strong><small>${kidProgress(u).xp} опыта · ${u?.rewards?.includes('kurai')?1:0} значков</small></span></a></div></header><nav class="discovery-shortcuts" aria-label="Маршруты на карте">${DISCOVERY_LOCATIONS.map(([id,name])=>`<button class="map-region-shortcut ${id==='bashkortostan'?'chosen':''}" type="button" data-discovery-shortcut="${id}" aria-pressed="${id==='bashkortostan'}">${kidIcon(id==='bashkortostan'?'compass':'lock')} ${name}</button>`).join('')}</nav><section class="discovery-map-card" aria-label="Карта открытий"><div class="atlas-map" id="atlasMap"><p role="status">Разворачиваем карту…</p></div><div class="discovery-map-note"><span>${kidIcon('compass')} Золотой компас — можно отправляться</span><button type="button" data-discovery-help>${kidIcon('help')} Как двигать карту?</button></div></section><section class="discovery-location" id="locationPanel" aria-live="polite">${discoveryLocationDetails('bashkortostan','Башкортостан',true,u)}</section><div class="discovery-bottom"><section class="discovery-guide">${visitCompanionMarkup()}<div><h2>Данияр уже ждёт!</h2><p>Приготовим угощения, украсим наряды и познакомимся с семьёй. А открытия сохраним в книге.</p><a href="#book/bashkortostan">Открыть книгу Башкортостана</a></div></section><section class="discovery-collection"><span>${kidIcon('bag')}</span><div><h2>Место для воспоминаний</h2><p>${u?.rewards?.includes('kurai')?'Первый значок «Курай» уже с тобой. Открывай рюкзак и примерь подарок Данияра.':'Заверши историю — получи бүрек и значок с кураем для рюкзака.'}</p><a href="#wardrobe">Заглянуть в рюкзак</a></div></section></div><dialog class="discovery-dialog" id="discoveryHelp" aria-labelledby="discoveryHelpTitle"><button type="button" class="discovery-close" aria-label="Закрыть подсказку">×</button><h2 id="discoveryHelpTitle">Карта в твоих руках</h2><p>Нажми на компас или выбери регион в списке. Золотая отметка — открытая история, замок — глава, которую мы готовим.</p><p>Приближай карту кнопкой +. Двигай её мышью или пальцем. На телефоне можно менять масштаб двумя пальцами.</p><p>С клавиатуры: стрелки перемещают карту, + и − меняют масштаб, 0 возвращает общий вид. Выбрать отметку — Enter.</p><button class="kid-primary" type="button" data-discovery-close>Понятно!</button></dialog></div>`}
-function discoveryLocationDetails(id,name,available,u){const s=u?.story||{},done=!!s.completed,total=STORY_ORDER.length,n=storyStepIndex(s);return `<div class="discovery-postcard">${available?'<img src="assets/ural-postcard.jpg" alt="Иллюстрированная долина реки на Южном Урале">':`<div class="discovery-coming-art">${kidIcon('lock')}<span>Новая история впереди</span></div>`}</div><div class="discovery-location-copy"><h2>${esc(name)}</h2><p>${available?'Данияр приглашает помочь семье подготовиться к Сабантую. Готовим чак-чак, собираем наряды, узнаём первые башкирские слова.':'Мы собираем материалы и истории для этой главы. А первая встреча уже ждёт тебя в Башкортостане.'}</p><div class="discovery-facts">${available?`<span>${kidIcon('book')} ${total} сцен</span><span>${kidIcon('compass')} Около 20 минут</span><span>${kidIcon('bag')} Бүрек и курай</span>`:`<span>${kidIcon('lock')} Глава готовится</span>`}</div></div><div class="discovery-location-action">${available?`<div class="discovery-progress-label"><span>${done?'История пройдена!':'Текущая остановка'}</span><strong>${done?total:n+1} / ${total}</strong></div><div class="discovery-progress" aria-label="${done?'История пройдена: '+total+' сцен':'Текущая остановка '+(n+1)+' из '+total}">${Array.from({length:total},(_,i)=>`<i class="${done?'done':i===n?'current':''}" ${!done&&i===n?'aria-current="step"':''}>${done?'✓':''}</i>`).join('')}</div><a class="kid-primary" href="#${done?'book/bashkortostan':n?'story':'book/bashkortostan'}">${done?'Открыть книгу':n?'Продолжить историю':'Отправиться в гости'}</a><p>${done?'Подарки сохранены в твоём рюкзаке.':'Все открытия останутся в твоей книге.'}</p>`:`<button class="kid-primary" type="button" data-discovery-shortcut="bashkortostan">Показать первый маршрут</button><p>Башкортостан открыт для путешествия.</p>`}</div>`}
-function wireDiscoveryAtlas(u){const root=document.getElementById('discoveryAtlas');if(!root)return;const panel=root.querySelector('#locationPanel'),dialog=root.querySelector('#discoveryHelp');let ready=false,controller,pendingSelection='bashkortostan';
-renderRussiaMap(root.querySelector('#atlasMap'),(id,name,available)=>{if(!root.isConnected)return;panel.innerHTML=discoveryLocationDetails(id,name,available,u);root.querySelectorAll('.map-region-shortcut').forEach(b=>{const chosen=b.dataset.discoveryShortcut===id;b.classList.toggle('chosen',chosen);b.setAttribute('aria-pressed',String(chosen))});if(ready&&innerWidth<750)panel.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})}).then(c=>{if(!root.isConnected)return;controller=c;c?.select(pendingSelection,true);ready=true});
-root.addEventListener('click',e=>{const pick=e.target.closest('[data-discovery-shortcut]');if(pick){pendingSelection=pick.dataset.discoveryShortcut;controller?.select(pendingSelection,true);}if(e.target.closest('[data-discovery-help]'))dialog.showModal();if(e.target.closest('[data-discovery-close],.discovery-close'))dialog.close()});}
+/* Discovery map and route details. */
+const DISCOVERY_LOCATIONS = [
+  ['bashkortostan', 'Башкортостан'], ['tatarstan', 'Татарстан'], ['karelia', 'Карелия'],
+  ['dagestan', 'Дагестан'], ['altai', 'Алтай'], ['yakutia', 'Якутия'],
+  ['kamchatka', 'Камчатка'], ['crimea', 'Крым'],
+];
+
+function discoveryAtlasPage(u) {
+  const progress = kidProgress(u);
+  const badges = u?.rewards?.includes('kurai') ? 1 : 0;
+  return `<div class="discovery-atlas" id="discoveryAtlas">
+    <header class="discovery-heading">
+      <h1>Куда отправимся <em>сегодня?</em></h1>
+      <p>Выбирай место. Знакомься с людьми. Собирай свою историю.</p>
+    </header>
+    <div class="discovery-stage">
+      <nav class="discovery-index" aria-label="Регионы на карте">
+        <h2>Регионы</h2>
+        ${DISCOVERY_LOCATIONS.map(([id, name]) => {
+          const open = id === 'bashkortostan';
+          return `<button type="button" class="discovery-region" data-atlas-region="${id}" aria-pressed="${open}">
+            <span>${name}</span>
+            <span class="discovery-region-state">${open ? 'Открыт' : kidIcon('lock') + '<span class="visually-hidden">Маршрут готовится</span>'}</span>
+          </button>`;
+        }).join('')}
+      </nav>
+      <section class="discovery-map-column" aria-label="Карта открытий">
+        <div class="discovery-map-card">
+          <div class="atlas-map" id="atlasMap"><p class="map-instructions" role="status">Разворачиваем карту…</p></div>
+        </div>
+        <div class="discovery-map-note">
+          <span>${kidIcon('compass')} Золотой компас отмечает открытый маршрут</span>
+          <button type="button" data-discovery-help>${kidIcon('help')} Как двигать карту?</button>
+        </div>
+      </section>
+      <aside class="discovery-panel" aria-label="Выбранный маршрут">
+        <a class="discovery-player" href="#profile">
+          ${u?.character ? gameCharacter(u, {gear:false}) : kidIcon('compass')}
+          <span><strong>${esc(u?.nick || 'Путешественник')}</strong><small>${progress.xp} опыта · ${badges} значков</small></span>
+        </a>
+        <section class="discovery-location" id="locationPanel" aria-live="polite">
+          ${discoveryLocationDetails('Башкортостан', true, u)}
+        </section>
+      </aside>
+    </div>
+    <div class="discovery-links">
+      <a href="#book/bashkortostan">${kidIcon('book')} Книга открытий</a>
+      <a href="#wardrobe">${kidIcon('bag')} Мой рюкзак</a>
+    </div>
+    <dialog class="discovery-dialog" id="discoveryHelp" aria-labelledby="discoveryHelpTitle">
+      <button type="button" class="discovery-close" aria-label="Закрыть подсказку">×</button>
+      <h2 id="discoveryHelpTitle">Карта в твоих руках</h2>
+      <p>Выбери регион на карте или в списке. Золотой компас отмечает открытый маршрут, замок — главу, которую мы готовим.</p>
+      <p>Приближай карту кнопкой + и двигай её мышью или пальцем. На телефоне масштаб можно менять двумя пальцами.</p>
+      <p>С клавиатуры: стрелки перемещают карту, + и − меняют масштаб, 0 возвращает общий вид. Выбрать отметку — Enter.</p>
+      <button class="discovery-action" type="button" data-discovery-close>Понятно!</button>
+    </dialog>
+  </div>`;
+}
+
+function discoveryLocationDetails(name, available, u) {
+  const story = u?.story || {};
+  const done = !!story.completed;
+  const total = STORY_ORDER.length;
+  const step = storyStepIndex(story);
+  const current = done ? total : step + 1;
+  const route = done || !step ? 'book/bashkortostan' : 'story';
+  const action = done ? 'Открыть книгу' : step ? 'Продолжить историю' : 'Отправиться в гости';
+
+  return `<div class="discovery-location-status ${available ? 'is-open' : ''}">
+    ${kidIcon(available ? 'compass' : 'lock')} ${available ? 'Маршрут открыт' : 'Маршрут готовится'}
+  </div>
+  <h2>${esc(name)}</h2>
+  <p>${available
+    ? 'Данияр приглашает помочь семье подготовиться к Сабантую. Готовим чак-чак, собираем наряды и узнаём первые башкирские слова.'
+    : 'Этот маршрут ещё готовится. Первое путешествие уже ждёт тебя в Башкортостане.'}</p>
+  ${available ? `<div class="discovery-facts">
+      <span>${kidIcon('book')} ${total} сцен</span>
+      <span>${kidIcon('compass')} Около 20 минут</span>
+    </div>
+    <div class="discovery-progress-label">
+      <span>${done ? 'История пройдена' : 'Текущая остановка'}</span><strong>${current} / ${total}</strong>
+    </div>
+    <progress class="discovery-progress" max="${total}" value="${current}" aria-label="Прогресс маршрута"></progress>
+    <a class="discovery-action" href="#${route}">${action}</a>`
+    : '<button class="discovery-action" type="button" data-atlas-region="bashkortostan">Показать открытый маршрут</button>'}`;
+}
+
+function wireDiscoveryAtlas(u) {
+  const root = document.getElementById('discoveryAtlas');
+  if (!root) return;
+  const panel = root.querySelector('#locationPanel');
+  const dialog = root.querySelector('#discoveryHelp');
+  const regionButtons = [...root.querySelectorAll('.discovery-region')];
+  let controller;
+  let pendingSelection = 'bashkortostan';
+
+  renderRussiaMap(root.querySelector('#atlasMap'), (id, name, available) => {
+    if (!root.isConnected) return;
+    panel.innerHTML = discoveryLocationDetails(name, available, u);
+    for (const button of regionButtons) {
+      button.setAttribute('aria-pressed', String(button.dataset.atlasRegion === id || button.firstElementChild.textContent === name));
+    }
+    if (controller && matchMedia('(max-width: 680px)').matches) {
+      panel.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    }
+  }).then(map => {
+    if (!root.isConnected) return;
+    map?.select(pendingSelection, true);
+    controller = map;
+  });
+
+  root.addEventListener('click', event => {
+    const region = event.target.closest('[data-atlas-region]');
+    if (region) {
+      pendingSelection = region.dataset.atlasRegion;
+      controller?.select(pendingSelection, true);
+    }
+    if (event.target.closest('[data-discovery-help]')) dialog.showModal();
+    if (event.target.closest('[data-discovery-close], .discovery-close')) dialog.close();
+  });
+}
