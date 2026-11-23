@@ -105,15 +105,17 @@ function playKitchenSound(pitch) {
 
 function renderVisitCooking(u, s) {
   const { index, dish, progress, step } = visitKitchenState(s);
-  const table = `<ol class="vk-menu" aria-label="Праздничное меню">${kitchenDishes.map((item, i) => {
+  const menu = `<ol class="vk-menu" aria-label="Праздничное меню">${kitchenDishes.map((item, i) => {
     const done = s.cooking[item.id]?.length === 3;
     return `<li ${i === index ? 'aria-current="step"' : ''}>
-      <span aria-hidden="true">${done ? '✓' : i + 1}</span><div><strong>${item.title}</strong>
+      <span aria-hidden="true">${done ? '✓' : i + 1}</span><div><strong>${item.id === 'tukmach' ? 'Тукмас' : item.title}</strong>
       <small>${done ? 'На столе' : i === index ? 'Готовим' : 'В меню'}</small></div></li>`;
   }).join('')}</ol>`;
-  if (!dish) return `<section class="vk-kitchen"><h2 tabindex="-1" id="vk-step">Праздничный стол готов!</h2>${table}
+  if (!dish) return `<section class="vk-kitchen vk-kitchen-finished" data-vk-surface="table" aria-labelledby="vk-step">
+    <div class="vk-feast-heading"><h1 tabindex="-1" id="vk-step">Праздничный стол готов!</h1>
+    <p>Теперь можно готовить праздничные наряды.</p></div>
     <div class="vk-feast">${kitchenDishes.map(item => `<figure>${kitchenImage(kitchenFeastArt[item.id], 'vk-served')}<figcaption>${item.title}</figcaption></figure>`).join('')}</div>
-    <p>Все блюда на столе. Теперь можно готовить праздничные наряды.</p></section>`;
+    </section>`;
 
   const { station, title, items, action, heat, moves, fry, pour } = step;
   const knead = action === 'Замесить';
@@ -139,42 +141,49 @@ function renderVisitCooking(u, s) {
     : 'Веди ложкой по кругу, чтобы покрыть кусочки сиропом.';
   const collected = progress.fried ?? [];
   const fx = fry ? 'fry' : pour ? 'pour' : knead ? 'knead' : heat ? 'heat' : items ? 'add' : 'work';
-  return `<section class="vk-kitchen" data-vk-mode="${fx}" aria-label="Игровая кухня">
-    <div class="vk-heading"><div><h2>${dish.title}</h2><p>${dish.summary}</p></div>
-    <div class="vk-heading-tools"><span>Шаг ${progress.step + 1} из ${dish.steps.length}</span>
-    <button class="vk-sound" type="button" data-vk-sound aria-pressed="${kitchenSound}">${kitchenSound ? 'Звук вкл.' : 'Звук выкл.'}</button></div></div>
-    ${table}
+  return `<section class="vk-kitchen" data-vk-mode="${fx}" data-vk-surface="${stove ? 'stove' : 'table'}" aria-label="Игровая кухня">
     <div class="vk-stage">
-      <div class="vk-instruction">
-        <h3 id="vk-step" tabindex="-1">${title}</h3><p>${hint}</p>
-        <div class="vk-recipe-meter" role="progressbar" aria-label="Прогресс рецепта" aria-valuemin="0" aria-valuemax="${dish.steps.length}" aria-valuenow="${progress.step}">${dish.steps.map((_,i) => `<i class="${i < progress.step ? 'is-done' : i === progress.step ? 'is-current' : ''}"></i>`).join('')}</div>
+      <div class="vk-recipe-card">
+        <div class="vk-heading"><h1>${dish.title}</h1><p>${dish.summary}</p></div>
+        ${menu}
       </div>
-      <div class="vk-tray ${items ? '' : 'vk-tray-tools'}">${items ? items.map(id => {
-        const label = kitchenProducts[id];
-        const added = progress.added.includes(id);
-        return `<button type="button" data-vk-add="${id}" ${added ? 'disabled' : ''}><span class="vk-ingredient" aria-hidden="true">${added ? '✓' : kitchenImage(id, 'vk-ingredient-art')}</span>${label}</button>`;
-      }).join('') : ''}</div>
-      <div class="vk-counter vk-counter-${stove ? 'stove' : 'table'}">
-        ${pour ? `<button type="button" class="vk-jar" data-vk-hold aria-label="Удерживать кувшин с сиропом">${kitchenImage('honey','vk-jar-art')}<span>Кувшин</span></button>
-          <div class="vk-pour-meter" aria-hidden="true"><i></i><span></span></div>` : ''}
-        <div class="vk-station vk-${station}" data-vk-station ${fry ? 'role="group" aria-label="Кусочки на сковороде"' : 'aria-hidden="true"'}>
-          ${knead ? '<div class="vk-knead-ring"></div>' : ''}
-          <div class="vk-vessel">${fry ? `<div class="vk-fry-tray">${Array.from({length:kitchenFryCount},(_,i) =>
-            `<button type="button" class="vk-fry-piece" data-vk-fry="${i}" data-state="${collected.includes(i) ? 'done' : 'pale'}" ${collected.includes(i) ? 'disabled' : ''} aria-label="Кусочек ${i+1}"></button>`).join('')}</div>`
-            : contents.slice(-3).map(id => kitchenImage(id, 'vk-picture')).join('')}
-          ${moves ? kitchenImage(step.art, 'vk-work-art') : ''}</div>
-          ${action ? kitchenImage(kitchenTools[action] || 'spoon', 'vk-tool') : ''}
-          ${heat ? '<div class="vk-steam"><i></i><i></i><i></i></div>' : ''}
+      <div class="vk-task">
+        <div class="vk-instruction">
+          <p class="vk-step-count">Шаг ${progress.step + 1} из ${dish.steps.length}</p>
+          <div class="vk-recipe-meter" role="progressbar" aria-label="Прогресс рецепта" aria-valuemin="0" aria-valuemax="${dish.steps.length}" aria-valuenow="${progress.step}">${dish.steps.map((_,i) => `<i class="${i < progress.step ? 'is-done' : i === progress.step ? 'is-current' : ''}"></i>`).join('')}</div>
+          <h2 id="vk-step" tabindex="-1">${title}</h2><p class="vk-hint">${hint}</p>
+          ${items ? `<p class="vk-add-status" role="status" data-vk-status>Добавлено ${progress.added.length} из ${items.length}</p>` : ''}
         </div>
-        ${pour ? '<i class="vk-stream" aria-hidden="true"></i>' : ''}
-        <span class="vk-station-label">${kitchenStations[station]}</span>
+        ${items ? '' : `<div class="vk-controls">
+          <button type="button" data-vk-work>${heat ? 'Включить плиту' : fry ? 'Снять золотистый кусочек' : pour ? 'Добавить порцию' : action}</button>
+          ${moves ? `<progress aria-label="${action}" value="${progress.moves}" max="${moves}"></progress>` : ''}
+          <p role="status" data-vk-status>${fry ? `Готово ${collected.length} из ${kitchenFryCount}` : ''}</p>
+        </div>`}
       </div>
-      <div class="vk-controls">${action || heat || fry || pour
-        ? `<button type="button" data-vk-work>${heat ? 'Включить плиту' : fry ? 'Снять золотистый кусочек' : pour ? 'Добавить порцию' : action}</button>` : ''}
-        ${moves ? `<progress aria-label="${action}" value="${progress.moves}" max="${moves}"></progress>` : ''}
-        <p role="status" data-vk-status>${items ? `Добавлено ${progress.added.length} из ${items.length}` : fry ? `Готово ${collected.length} из ${kitchenFryCount}` : ''}</p>
+      <div class="vk-workspace">
+        <div class="vk-counter vk-counter-${stove ? 'stove' : 'table'}">
+          ${pour ? `<button type="button" class="vk-jar" data-vk-hold aria-label="Удерживать кувшин с сиропом">${kitchenImage('honey','vk-jar-art')}<span>Кувшин</span></button>
+            <div class="vk-pour-meter" aria-hidden="true"><i></i><span></span></div>` : ''}
+          <div class="vk-station vk-${station}" data-vk-station ${fry ? 'role="group" aria-label="Кусочки на сковороде"' : 'aria-hidden="true"'}>
+            ${knead ? '<div class="vk-knead-ring"></div>' : ''}
+            <div class="vk-vessel">${fry ? `<div class="vk-fry-tray">${Array.from({length:kitchenFryCount},(_,i) =>
+              `<button type="button" class="vk-fry-piece" data-vk-fry="${i}" data-state="${collected.includes(i) ? 'done' : 'pale'}" ${collected.includes(i) ? 'disabled' : ''} aria-label="Кусочек ${i+1}"></button>`).join('')}</div>`
+              : contents.slice(-3).map(id => kitchenImage(id, 'vk-picture')).join('')}
+            ${moves ? kitchenImage(step.art, 'vk-work-art') : ''}</div>
+            ${action ? kitchenImage(kitchenTools[action] || 'spoon', 'vk-tool') : ''}
+            ${heat ? '<div class="vk-steam"><i></i><i></i><i></i></div>' : ''}
+          </div>
+          ${pour ? '<i class="vk-stream" aria-hidden="true"></i>' : ''}
+          <span class="vk-station-label">${kitchenStations[station]}</span>
+        </div>
+        <div class="vk-tray ${items ? '' : 'vk-tray-tools'}">${items ? items.map(id => {
+          const label = kitchenProducts[id];
+          const added = progress.added.includes(id);
+          return `<button type="button" data-vk-add="${id}" ${added ? 'disabled' : ''}><span class="vk-ingredient" aria-hidden="true">${added ? '✓' : kitchenImage(id, 'vk-ingredient-art')}</span>${label}</button>`;
+        }).join('') : ''}</div>
       </div>
     </div>
+    <button class="vk-sound" type="button" data-vk-sound aria-pressed="${kitchenSound}">Звук</button>
   </section>`;
 }
 
@@ -196,7 +205,6 @@ function wireVisitCooking(u, s, redraw) {
   sound.onclick = () => {
     kitchenSound = !kitchenSound;
     sound.setAttribute('aria-pressed', String(kitchenSound));
-    sound.textContent = kitchenSound ? 'Звук вкл.' : 'Звук выкл.';
     playKitchenSound(440);
   };
 
