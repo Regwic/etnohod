@@ -7,6 +7,30 @@ body[data-route="map"]::after {
   display: none;
 }
 
+body[data-route="map"] > .site-header {
+  min-height: 84px;
+  color: #193a2a;
+}
+
+body[data-route="map"] > .site-header a.brand {
+  color: #193a2a !important;
+}
+
+body[data-route="map"] > .site-header .brand > img {
+  filter: none;
+}
+
+body[data-route="map"] > .site-header nav,
+body[data-route="map"] > .site-header .header-enter {
+  color: #193a2a;
+  border-color: #8e9b7e;
+  background: #e8ebd4;
+}
+
+body[data-route="map"] > .site-header nav a {
+  color: #193a2a;
+}
+
 body[data-route="map"] .discovery-atlas {
   --atlas-cream: #f8efd9;
   --atlas-paper: #fff8e7;
@@ -37,7 +61,7 @@ body[data-route="map"] .discovery-heading {
 
 body[data-route="map"] .discovery-atlas h1 {
   color: var(--atlas-ink);
-  font: 800 clamp(35px, 5.75vw, 91px)/1.04 Unbounded, Nunito, sans-serif;
+  font: 800 clamp(35px, 5.2vw, 86px)/1.04 Unbounded, Nunito, sans-serif;
   letter-spacing: -.065em;
   margin: 0 0 14px;
   text-wrap: balance;
