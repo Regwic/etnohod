@@ -110,11 +110,13 @@ body[data-route="map"] .discovery-atlas {
   animation: atlas-canvas-in .72s var(--atlas-ease) both;
 }
 
-.discovery-atlas .atlas-map .russia-svg {
+body[data-route="map"] #atlasMap .russia-svg {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: 100% !important;
+  min-height: 0 !important;
   max-height: none;
   touch-action: none;
   cursor: grab;
@@ -122,6 +124,7 @@ body[data-route="map"] .discovery-atlas {
 }
 
 .discovery-atlas .atlas-map .russia-svg:active { cursor: grabbing; }
+.discovery-atlas .atlas-map .russia-svg:focus:not(:focus-visible) { outline: none; }
 
 .discovery-atlas .atlas-map .map-instructions {
   position: absolute;
@@ -186,7 +189,7 @@ body[data-route="map"] .discovery-heading {
   z-index: 1;
   top: max(96px, calc(env(safe-area-inset-top) + 78px));
   left: var(--atlas-gutter);
-  max-width: min(600px, 75vw);
+  max-width: min(720px, 78vw);
   margin: 0;
   display: block;
   pointer-events: none;
@@ -198,7 +201,7 @@ body[data-route="map"] .discovery-heading {
 body[data-route="map"] .discovery-atlas h1 {
   margin: 0 0 14px;
   color: var(--atlas-ink);
-  font: 800 clamp(30px, 4.6vw, 72px)/1.06 Unbounded, Nunito, sans-serif;
+  font: 800 clamp(30px, 4.25vw, 72px)/1.06 Unbounded, Nunito, sans-serif;
   letter-spacing: -.063em;
   text-shadow: 0 0 1em #fff6df, 0 0 .28em #fff6df;
 }
@@ -361,11 +364,16 @@ body[data-route="map"] .discovery-player > .game-character .character-sprite {
   font-size: 22px;
 }
 
-.discovery-atlas .discovery-controls select {
+body[data-route="map"] .discovery-atlas .discovery-controls select {
+  height: 44px;
+  min-height: 44px !important;
+  min-width: 0;
   max-width: 152px;
-  padding: 6px 26px 6px 10px;
+  padding: 6px 10px !important;
   border-color: #8d9b80;
   background: #fff7e4;
+  color: var(--atlas-ink);
+  font-size: 14px !important;
 }
 
 .discovery-atlas .discovery-region:hover,
@@ -596,6 +604,7 @@ body[data-route="map"] .discovery-location .discovery-progress {
   body[data-route="map"] .discovery-atlas.has-selection .discovery-heading {
     transform: scale(.56);
   }
+  body[data-route="map"] .discovery-player { max-width: 43vw; }
   .discovery-player small { display: none; }
   .discovery-player strong { font-size: 13px; }
 
@@ -610,15 +619,13 @@ body[data-route="map"] .discovery-location .discovery-progress {
     max-width: 100%;
   }
 
-  .discovery-atlas .discovery-controls select {
-    min-width: 0;
+  body[data-route="map"] .discovery-atlas .discovery-controls select {
     max-width: min(152px, calc(100vw - 245px));
-    padding-right: 8px;
-    font-size: 13px;
+    font-size: 13px !important;
   }
 
   .discovery-panel {
-    inset: auto var(--atlas-gutter) calc(var(--atlas-bottom) + 124px);
+    inset: auto var(--atlas-gutter) calc(var(--atlas-bottom) + 130px);
     width: auto;
     max-height: 40dvh;
     padding: 15px 17px;
