@@ -25,14 +25,16 @@ function resetCurrentCharacter(){
  save();
  location.hash='login';
 }
-function render(){if(typeof backgroundVideoCleanup==='function'){backgroundVideoCleanup();backgroundVideoCleanup=null;}if(typeof visitFlushTime==='function')visitFlushTime();if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();const [route='home',arg,section]=(location.hash.slice(1)||'home').split('/'),u=user();
+let discoveryAtlasCleanup;
+function render(){
+if(discoveryAtlasCleanup){discoveryAtlasCleanup();discoveryAtlasCleanup=null;}if(typeof backgroundVideoCleanup==='function'){backgroundVideoCleanup();backgroundVideoCleanup=null;}if(typeof visitFlushTime==='function')visitFlushTime();if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();const [route='home',arg,section]=(location.hash.slice(1)||'home').split('/'),u=user();
 if(['map','region','story','lesson','quiz','result','profile','book','wardrobe'].includes(route)){if(!u){location.hash='home';return}if(!u.character){location.hash='character';return}}
 if(route==='home'){layout('Живой атлас культур',firstScreenHome(u));wireFirstScreen()}
 else if(route==='login')visitLoginPage(arg==='return');
 else if(route==='book'){layout('Твоя книга регионов',visitBookPage(u,arg,section));wireVisitBook(u)}
 else if(route==='wardrobe'){layout('Гардероб и рюкзак',visitWardrobePage(u));wireVisitWardrobe(u)}
 else if(route==='character'){if(arg==='edit'&&u){pendingJoin=null;sessionStorage.removeItem('ethnohod-pending-join');creatorState=null}renderCharacterStudio();}
-else if(route==='map'){layout('Карта открытий',discoveryAtlasPage(u));wireDiscoveryAtlas(u)}
+else if(route==='map'){layout('Карта открытий',discoveryAtlasPage(u));discoveryAtlasCleanup=wireDiscoveryAtlas(u)}
 else if(route==='story'){layout('Праздник с Данияром',storyPage(u));wireStoryGame(u)}
 else if(route==='region'){
   if(!requireUser())return;
