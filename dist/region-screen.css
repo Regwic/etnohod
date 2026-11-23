@@ -1,6 +1,6 @@
 body[data-route="region"] {
-  --region-field: #685439;
-  background: var(--region-field);
+  --region-green: #15392b;
+  background: var(--region-green);
 }
 
 body[data-route="region"]::before,
@@ -20,7 +20,7 @@ body[data-route="region"] main#app {
   --region-cream: #fff5dc;
   --region-gold: #ffcf6c;
   --region-gutter: clamp(16px, 4.4vw, 68px);
-  background: var(--region-field);
+  background: var(--region-green);
   font-family: Nunito, system-ui, sans-serif;
   padding-bottom: clamp(28px, 5vw, 70px);
 }
@@ -43,7 +43,7 @@ body[data-route="region"] main#app {
 
 .region-hero-media {
   z-index: -2;
-  background: var(--region-field) url('assets/bashkortostan-region.webp') center 58% / cover no-repeat;
+  background: var(--region-green) url('assets/bashkortostan-region.webp') center 58% / cover no-repeat;
 }
 
 .region-hero-media video {
@@ -57,9 +57,9 @@ body[data-route="region"] main#app {
 .region-hero-shade {
   z-index: -1;
   background:
-    linear-gradient(180deg, transparent 71%, #68543938 83%, #685439a8 94%, var(--region-field) 100%),
+    linear-gradient(180deg, transparent 71%, #15392b38 83%, #15392ba8 94%, var(--region-green) 100%),
     linear-gradient(180deg, #071e16b3, transparent 33%),
-    linear-gradient(90deg, #201a1429, transparent 70%);
+    linear-gradient(90deg, #0c241c2b, transparent 70%);
 }
 
 .region-hero-content {
