@@ -103,9 +103,8 @@ body[data-route="story"] #storyGame[data-marten-stage="2"] {
   border-radius: 0;
   color: var(--vk-ink);
   background:
-    radial-gradient(ellipse at 50% 44%, transparent 27%, #100b075e 100%),
-    url('assets/kitchen/tabletop.webp') center / cover no-repeat,
-    repeating-linear-gradient(0deg, #7e4e2e 0 2px, #ad7548 3px 72px);
+    url('assets/kitchen/tabletop-illustrated.webp') center / cover no-repeat,
+    repeating-linear-gradient(0deg, #b68555 0 2px, #d1a370 3px 72px);
 }
 #storyGame[data-marten-stage="2"] > .vk-kitchen[data-vk-surface="stove"] {
   background:
