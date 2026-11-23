@@ -118,7 +118,7 @@ function discoveryLocationDetails(name, available, u) {
   const total = STORY_ORDER.length;
   const step = storyStepIndex(story);
   const current = done ? total : step + 1;
-  const route = done || !step ? 'book/bashkortostan' : 'story';
+  const route = done ? 'book/bashkortostan' : step ? 'story' : 'region';
   const action = done ? 'Открыть книгу' : step ? 'Продолжить историю' : 'Отправиться в гости';
 
   return `<div class="discovery-location-status ${available ? 'is-open' : ''}">
