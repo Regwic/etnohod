@@ -117,6 +117,7 @@ function renderVisitCooking(u, s) {
 
   const { station, title, items, action, heat, moves, fry, pour } = step;
   const knead = action === 'Замесить';
+  const stove = station === 'pan' || station === 'pot';
   const previous = dish.steps[progress.step - 1];
   const keepPrevious = previous?.station === station;
   const serving = station === 'plate'
@@ -133,7 +134,9 @@ function renderVisitCooking(u, s) {
     : pour ? 'Удерживай кувшин и отпусти, когда уровень попадёт в зелёную зону.'
     : heat ? 'Включи плиту и дождись готовности.'
     : knead ? 'Веди ложкой по кругу. Три оборота — и тесто готово.'
-    : 'Проведи инструментом по рабочей поверхности или нажми кнопку.';
+    : action === 'Раскатать' ? 'Води скалкой по тесту туда-сюда.'
+    : action === 'Нарезать' ? 'Проводи ножом по тесту, пока не нарежешь весь пласт.'
+    : 'Веди ложкой по кругу, чтобы покрыть кусочки сиропом.';
   const collected = progress.fried ?? [];
   const fx = fry ? 'fry' : pour ? 'pour' : knead ? 'knead' : heat ? 'heat' : items ? 'add' : 'work';
   return `<section class="vk-kitchen" data-vk-mode="${fx}" aria-label="Игровая кухня">
@@ -151,7 +154,7 @@ function renderVisitCooking(u, s) {
         const added = progress.added.includes(id);
         return `<button type="button" data-vk-add="${id}" ${added ? 'disabled' : ''}><span class="vk-ingredient" aria-hidden="true">${added ? '✓' : kitchenImage(id, 'vk-ingredient-art')}</span>${label}</button>`;
       }).join('') : ''}</div>
-      <div class="vk-counter">
+      <div class="vk-counter vk-counter-${stove ? 'stove' : 'table'}">
         ${pour ? `<button type="button" class="vk-jar" data-vk-hold aria-label="Удерживать кувшин с сиропом">${kitchenImage('honey','vk-jar-art')}<span>Кувшин</span></button>
           <div class="vk-pour-meter" aria-hidden="true"><i></i><span></span></div>` : ''}
         <div class="vk-station vk-${station}" data-vk-station ${fry ? 'role="group" aria-label="Кусочки на сковороде"' : 'aria-hidden="true"'}>
@@ -159,7 +162,7 @@ function renderVisitCooking(u, s) {
           <div class="vk-vessel">${fry ? `<div class="vk-fry-tray">${Array.from({length:kitchenFryCount},(_,i) =>
             `<button type="button" class="vk-fry-piece" data-vk-fry="${i}" data-state="${collected.includes(i) ? 'done' : 'pale'}" ${collected.includes(i) ? 'disabled' : ''} aria-label="Кусочек ${i+1}"></button>`).join('')}</div>`
             : contents.slice(-3).map(id => kitchenImage(id, 'vk-picture')).join('')}
-          ${knead ? kitchenImage('dough','vk-dough-art') : ''}</div>
+          ${moves ? kitchenImage(step.art, 'vk-work-art') : ''}</div>
           ${action ? kitchenImage(kitchenTools[action] || 'spoon', 'vk-tool') : ''}
           ${heat ? '<div class="vk-steam"><i></i><i></i><i></i></div>' : ''}
         </div>
@@ -333,13 +336,13 @@ function wireVisitCooking(u, s, redraw) {
   if (step.moves) {
     const tool = station.querySelector('.vk-tool');
     const meter = root.querySelector('.vk-controls progress');
-    const knead = step.action === 'Замесить';
+    const circular = step.station === 'bowl';
     let gesture;
     station.classList.add('vk-swipe');
     function paintWork() {
       const ratio = progress.moves / step.moves;
       station.style.setProperty('--vk-work-progress', ratio * 100 + '%');
-      if (knead) station.style.setProperty('--vk-dough', ratio);
+      station.style.setProperty('--vk-work-ratio', ratio);
       meter.value = progress.moves;
       return ratio;
     }
@@ -355,38 +358,46 @@ function wireVisitCooking(u, s, redraw) {
       update(1);
       if (!busy) { save(); celebrate(); playKitchenSound(290); }
     };
-    station.onpointerdown = event => {
-      if (busy || !event.isPrimary || event.button !== 0) return;
-      station.setPointerCapture(event.pointerId);
-      gesture = { x:event.clientX, y:event.clientY, pointer:event.pointerId, angle:null };
-    };
-    station.onpointermove = event => {
-      if (busy || gesture?.pointer !== event.pointerId) return;
+    function moveTool(event) {
       const rect = station.getBoundingClientRect();
-      const x = Math.max(15, Math.min(rect.width-15, event.clientX-rect.left));
-      const y = Math.max(15, Math.min(rect.height-15, event.clientY-rect.top));
+      const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
       tool.style.left = x + 'px';
       tool.style.top = y + 'px';
       tool.classList.add('vk-tool-in-use');
-      if (!knead) return;
-      const dx = x-rect.width/2;
-      const dy = y-rect.height/2;
-      if (Math.hypot(dx,dy) < 18) { gesture.angle = null; return; }
-      const angle = Math.atan2(dy,dx);
-      if (gesture.angle !== null) {
-        const delta = angle - gesture.angle;
-        const arc = Math.abs(Math.atan2(Math.sin(delta),Math.cos(delta)));
-        if (arc < Math.PI/2) update(arc / (2*Math.PI));
+
+      const surface = vessel.getBoundingClientRect();
+      const dx = (event.clientX - surface.left) / surface.width - .5;
+      const dy = (event.clientY - surface.top) / surface.height - .5;
+      const radius = Math.hypot(dx, dy);
+      const onFood = circular ? radius >= .09 && radius <= .57 : Math.abs(dx) <= .5 && Math.abs(dy) <= .5;
+      const previous = gesture.point;
+      gesture.point = onFood ? { dx, dy } : null;
+      if (!onFood || !previous) return;
+
+      if (circular) {
+        const delta = Math.atan2(dy, dx) - Math.atan2(previous.dy, previous.dx);
+        const arc = Math.abs(Math.atan2(Math.sin(delta), Math.cos(delta)));
+        if (arc < Math.PI / 2) update(arc / (2 * Math.PI));
+      } else {
+        update(Math.hypot(dx - previous.dx, dy - previous.dy) / .75);
       }
-      gesture.angle = angle;
+    }
+    station.onpointerdown = event => {
+      if (busy || gesture || !event.isPrimary || event.button !== 0) return;
+      station.setPointerCapture(event.pointerId);
+      gesture = { pointer: event.pointerId, point: null };
+      moveTool(event);
+    };
+    station.onpointermove = event => {
+      if (!busy && gesture?.pointer === event.pointerId) moveTool(event);
     };
     function endWork(event) {
       if (gesture?.pointer !== event.pointerId) return;
-      const distance = Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y);
+      if (!busy && event.type === 'pointerup') moveTool(event);
       gesture = null;
       tool.classList.remove('vk-tool-in-use');
       tool.style.left = tool.style.top = '';
-      if (!knead && event.type === 'pointerup' && distance >= 22) update(1);
       if (!busy) save();
     }
     station.onpointerup = endWork;

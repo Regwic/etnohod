@@ -33,7 +33,7 @@
 .vk-menu small { display: block; margin-top: .15rem; font-size: .875rem; }
 .vk-stage {
   overflow: clip; border-radius: 1.1rem; border: 1px solid #c99268;
-  background: repeating-conic-gradient(#ffe0b8 0 25%, #ffebcc 0 50%) 0 0 / 40px 40px;
+  background: #f6e7c9;
 }
 .vk-instruction {
   text-align: center; padding: .75rem .75rem .65rem;
@@ -44,9 +44,9 @@
 .vk-stage progress { accent-color: var(--vk-green); width: min(15rem, 90%); height: .55rem; vertical-align: middle; }
 .vk-tray {
   position: relative; z-index: 2; display: flex; justify-content: center;
-  gap: .45rem; padding: .75rem .25rem .2rem;
+  gap: .45rem; padding: .75rem .25rem .55rem;
 }
-.vk-tray-tools { padding: .3rem 0 0; }
+.vk-tray-tools { display: none; }
 .vk-kitchen button {
   font: inherit; font-weight: 900; border-radius: .75rem; padding: .4rem .65rem;
   cursor: pointer; line-height: 1.15; min-height: 44px;
@@ -65,7 +65,18 @@
 .vk-tray .vk-dragging { z-index: 4; position: relative; cursor: grabbing; }
 .vk-kitchen button:focus-visible { outline: 3px solid #2b6649; outline-offset: 3px; }
 .vk-counter {
-  display: grid; justify-items: center; gap: .25rem; padding: .85rem .5rem .45rem;
+  display: grid; justify-items: center; gap: .65rem; padding: .95rem .5rem .7rem;
+  border-block: 1px solid #765033;
+}
+.vk-counter-table {
+  background:
+    repeating-linear-gradient(2deg, transparent 0 9px, #66381f16 10px, transparent 12px 19px),
+    repeating-linear-gradient(0deg, #815335 0 2px, #c48e5b 3px, #dbac76 5px, #c28b59 43px);
+  box-shadow: inset 0 2px #ffebcb60, inset 0 -5px #754a30a8;
+}
+.vk-counter-stove {
+  background: linear-gradient(155deg, #585f59, #333c38 48%, #252d2a);
+  box-shadow: inset 0 2px #bfc5b888, inset 0 -5px #151d19;
 }
 .vk-station {
   width: min(100%, 20rem); height: clamp(9rem, 32vw, 13rem);
@@ -87,7 +98,17 @@
   box-shadow: 0 6px #78452b, 0 13px 9px #59341840, inset 0 0 0 3px #f0bc86;
 }
 .vk-pan, .vk-pot {
-  background: #526261; border: 4px solid #374947; box-shadow: 0 5px #293938;
+  background: radial-gradient(ellipse at center,
+    #272e2a 0 40%, #646d64 41% 42%, #171f1b 43% 50%,
+    #8a9286 51% 52%, #242b27 53% 56%, transparent 57%);
+}
+.vk-pan.vk-drop, .vk-pot.vk-drop {
+  outline-color: #badeac;
+}
+.vk-pan.vk-heating, .vk-pot.vk-heating {
+  background: radial-gradient(ellipse at center,
+    #292a25 0 40%, #ffad52 41% 42%, #473529 43% 50%,
+    #e4823e 51% 52%, #292a25 53% 56%, transparent 57%);
 }
 .vk-pan .vk-vessel, .vk-pot .vk-vessel {
   width: 54%; height: 82%; background: #363b39; border: 7px solid #aeb6a5;
@@ -112,7 +133,7 @@
 }
 .vk-controls {
   display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
-  gap: .5rem; padding: .3rem .5rem .65rem; min-height: 2.5rem;
+  gap: .5rem; padding: .55rem .5rem .65rem; min-height: 2.5rem;
 }
 .vk-controls button { color: white; background: var(--vk-accent); border: 1px solid #813923; }
 .vk-controls button:disabled { opacity: .75; cursor: default; }
@@ -120,10 +141,6 @@
 .vk-controls p { font-size: .875rem; font-weight: 800; }
 .vk-controls p:empty { display: none; }
 .vk-heating .vk-vessel { animation: vk-simmer .55s ease-in-out infinite alternate; }
-.vk-heating::after {
-  content: ''; height: .45rem; width: 35%; background: #ffb54a; border-radius: 1rem;
-  position: absolute; bottom: .25rem; box-shadow: 0 0 16px #ff8b44;
-}
 @keyframes vk-simmer { to { filter: brightness(1.2); } }
 @media (prefers-reduced-motion: reduce) { .vk-heating .vk-vessel { animation: none; } }
 .vk-feast { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #f3e4ca; border-radius: 1rem; margin-bottom: .75rem; }
@@ -264,7 +281,7 @@
   to { opacity: 0; transform: translate(9px,-27px) scale(1.36); }
 }
 
-.vk-kitchen[data-vk-mode="fry"] .vk-pan { height: clamp(11rem, 39vw, 15rem); background: #475855; }
+.vk-kitchen[data-vk-mode="fry"] .vk-pan { height: clamp(11rem, 39vw, 15rem); }
 .vk-kitchen[data-vk-mode="fry"] .vk-vessel {
   display: flex;
   align-items: center;
@@ -409,17 +426,23 @@
   }
 }
 
-.vk-kitchen[data-vk-mode="knead"] .vk-vessel > .vk-picture {
-  opacity: calc(1 - var(--vk-dough, 0));
+.vk-swipe .vk-picture {
+  opacity: calc(1 - var(--vk-work-ratio, 0));
   transition: opacity .18s ease;
 }
-.vk-dough-art {
+.vk-work-art {
   position: absolute;
   z-index: 2;
   width: 64%;
   height: auto;
   pointer-events: none;
-  opacity: var(--vk-dough, 0);
-  transform: scale(calc(.65 + var(--vk-dough, 0) * .35));
+  opacity: var(--vk-work-ratio, 0);
+  transform: scale(calc(.65 + var(--vk-work-ratio, 0) * .35));
   transition: opacity .18s ease, transform .18s ease;
+}
+
+.vk-board .vk-work-art {
+  width: 56%;
+  max-height: 100%;
+  object-fit: contain;
 }
