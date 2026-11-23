@@ -10,7 +10,7 @@ const lessons=[
 ];
 const sources='<a href="https://bigenc.ru/" target="_blank" rel="noopener">Большая российская энциклопедия</a> · <a href="https://www.culture.ru/" target="_blank" rel="noopener">Культура.РФ</a> · <a href="https://bashenc.online/" target="_blank" rel="noopener">Башкирская энциклопедия</a>';
 const link=(route,text,secondary=false)=>`<a class="btn ${secondary?'secondary':''}" href="#${route}">${text}</a>`;
-function layout(title,body){const route=location.hash.slice(1).split('/')[0]||'home';document.body.dataset.route=route;$('#app').innerHTML=`${['home','map'].includes(route)?'':`<div class="page-heading"><h1>${esc(title)}</h1></div>`}${body}<footer class="site-footer"><a class="brand" href="#home">этноход</a><span>Открывать мир. Понимать друг друга.</span><div><a href="#about">О проекте ↗</a><a href="#sources">Источники ↗</a></div><small>© 2026 · Учебный прототип</small></footer>`;$('.header-enter').innerHTML=`<span class="header-enter-label">${user()?'Мой герой':'Создать героя'}</span><svg class="header-enter-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 19 5M9 5h10v10"/></svg>`;$('.header-enter').href=user()?'#profile':'#login';$('#nav').innerHTML=[['map','Карта'],['book','Книга'],['wardrobe','Рюкзак'],['teacher','Учителю']].map(([r,t])=>`<a class="${route===r?'active':''}"${route===r?' aria-current="page"':''} href="#${r}">${t}</a>`).join('');requestAnimationFrame(()=>{document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el))})}
+function layout(title,body){const route=location.hash.slice(1).split('/')[0]||'home';document.body.dataset.route=route;$('#app').innerHTML=`${['home','map','region'].includes(route)?'':`<div class="page-heading"><h1>${esc(title)}</h1></div>`}${body}<footer class="site-footer"><a class="brand" href="#home">этноход</a><span>Открывать мир. Понимать друг друга.</span><div><a href="#about">О проекте ↗</a><a href="#sources">Источники ↗</a></div><small>© 2026 · Учебный прототип</small></footer>`;$('.header-enter').innerHTML=`<span class="header-enter-label">${user()?'Мой герой':'Создать героя'}</span><svg class="header-enter-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 19 5M9 5h10v10"/></svg>`;$('.header-enter').href=user()?'#profile':'#login';$('#nav').innerHTML=[['map','Карта'],['book','Книга'],['wardrobe','Рюкзак'],['teacher','Учителю']].map(([r,t])=>`<a class="${route===r?'active':''}"${route===r?' aria-current="page"':''} href="#${r}">${t}</a>`).join('');requestAnimationFrame(()=>{document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el))})}
 function requireUser(){if(user())return true;location.hash='login';return false}
 function resetCurrentCharacter(){
  const current=user();
@@ -25,7 +25,7 @@ function resetCurrentCharacter(){
  save();
  location.hash='login';
 }
-function render(){if(typeof firstScreenCleanup==='function')firstScreenCleanup();if(typeof visitFlushTime==='function')visitFlushTime();if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();const [route='home',arg,section]=(location.hash.slice(1)||'home').split('/'),u=user();
+function render(){if(typeof backgroundVideoCleanup==='function'){backgroundVideoCleanup();backgroundVideoCleanup=null;}if(typeof visitFlushTime==='function')visitFlushTime();if(typeof visitPhraseAudio!=='undefined'&&visitPhraseAudio)visitPhraseAudio.pause();const [route='home',arg,section]=(location.hash.slice(1)||'home').split('/'),u=user();
 if(['map','region','story','lesson','quiz','result','profile','book','wardrobe'].includes(route)){if(!u){location.hash='home';return}if(!u.character){location.hash='character';return}}
 if(route==='home'){layout('Живой атлас культур',firstScreenHome(u));wireFirstScreen()}
 else if(route==='login')visitLoginPage(arg==='return');
@@ -34,7 +34,12 @@ else if(route==='wardrobe'){layout('Гардероб и рюкзак',visitWardr
 else if(route==='character'){if(arg==='edit'&&u){pendingJoin=null;sessionStorage.removeItem('ethnohod-pending-join');creatorState=null}renderCharacterStudio();}
 else if(route==='map'){layout('Карта открытий',discoveryAtlasPage(u));wireDiscoveryAtlas(u)}
 else if(route==='story'){layout('Праздник с Данияром',storyPage(u));wireStoryGame(u)}
-else if(route==='region'){if(!requireUser())return;layout('Башкортостан',visitBookPage(u,'bashkortostan'));wireVisitBook(u)}
+else if(route==='region'){
+  if(!requireUser())return;
+  layout('Башкортостан',regionPage(u));
+  wireVisitBook(u,true);
+  backgroundVideoCleanup=wireLoopingBackground($('#regionVideo'),$('.region-video-toggle'));
+}
 else if(route==='lesson'){if(!requireUser())return;let i=Number(arg),l=lessons[i];if(!l){location.hash='region';return}layout(l.title,gameLessonPage(l,i,u));document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{let ok=+b.dataset.a===l.correct;$('#feedback').textContent=(ok?'Верно! ':'Попробуй ещё. ')+l.why;if(ok){if(!u.completed.includes(i))u.completed.push(i);save();document.querySelectorAll('[data-a]').forEach(x=>x.disabled=true);$('#next').innerHTML=link(i<4?'lesson/'+(i+1):'region',i<4?'Следующая остановка':'Вернуться к маршруту')}})}
 else if(route==='quiz'){if(!requireUser())return;if(u.completed.length<5){location.hash='region';return}let qi=0,answers=[];layout('Итоговое испытание','<div class="card" id="quiz"></div>');function draw(){let l=lessons[qi];$('#quiz').innerHTML=`<h2>${l.question}</h2><p class="quiz-count">Вопрос ${qi+1} из 5</p>${l.options.map((o,j)=>`<button class="answer" data-q="${j}">${o}</button>`).join('')}`;document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{answers.push(+b.dataset.q);if(++qi<5)draw();else{u.attempts.push({date:new Date().toISOString(),answers,score:answers.filter((a,i)=>a===lessons[i].correct).length});save();location.hash='result'}})}draw()}
 else if(route==='result'){if(!requireUser())return;let a=u.attempts.at(-1);if(!a){location.hash='region';return}layout('Твои открытия',gameResultPage(a,u))}
